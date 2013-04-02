@@ -73,7 +73,7 @@
       tracking (MST) method developed by the biology department at Cal Poly,
       San Luis Obispo. This method consists of two parts: (1) sample collection
       and pyroprinting (2) comparison of produced pyroprints against a
-      database.  Cal Poly Library of Pyroprints (CPLOP) is a web-based database
+      database. Cal Poly Library of Pyroprints (CPLOP) is a web-based database
       application that provides storage and analysis of pyroprints. CPLOP
       currently contains 4500 pyroprints and is growing rapidly as students and
       researchers continue adding data. Hierarchical clustering, the
@@ -104,27 +104,6 @@
 
 \renewcommand{\baselinestretch}{1.66}
 
-% Dr. Kitts
-% MST was coined by the folks (water quality oriented environmental
-% microbiologists) who do what should really be called FST, or fecal source
-% tracking. I think they wanted to sanitize the term. However, MST could
-% easily (in my opinion) be applied to tracking the sources of microbes in any
-% situation, thus it could also be a branch of epidemiology, which is tracking
-% the sources of pathogenic organisms as the cause of disease. The bacillus
-% work thus doesn't quite meet the criteria of MST as originally conceived,
-% but it isn't much of a stretch. I think you'll be fine using it in your
-% thesis, though you may want to add a sentence about the bacillus work being
-% an extension of MST into the realm of food microbiology.
-
-% Dr. Black
-% It SHOULD be used for tracking any bacteria, but it is not. 
-% I think the key is the use of "source", where animals are considered sources
-% of the bacteria that are primarily shed in our feces. I disagree with the
-% implications behind this limitation, however. I do not see us as anything
-% more than moving environments for them to reproduce (i.e., they do not
-% originate from our bowels). Nevertheless, we must conform to the common use
-% of the terms, so MST = FIB.
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%% ----------------- Main chapters ---------------------- %%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -132,98 +111,89 @@
 \chapter{Introduction}\label{chap:intro}
    To maintain the cleanliness of current ``fishable and swimmable'' bodies of
    water, and improve the cleanliness of others, health and environmental
-   protection agencies have been interested in the ability to track a source of
+   protection agencies have been interested in the ability to track sources of
    fecal contamination at the species level~\cite{Scott:CurrentMST,
    Simpson:StateOf, Desmarais:SoilInfluence}. Investigating fecal contamination
    is especially necessary in waters used for human recreation where dangerous
    pathogens are transferable. Further, relating a fecal contamination back to
-   a host species is an important first step in controlling fecal contamination
-   and managing microbial risks by enabling natural resource managers to
-   address fecal contamination at its source.
+   a particular species is an important first step in controlling fecal
+   contamination and managing bacterial risks by enabling natural resource
+   managers to address fecal contamination at its source.
 
    Within the last decade, several techniques of identifying and descriminating
-   between various sources of fecal bacteria in an environment have been studied and
-   developed~\cite{Sargeant:ReviewMST, Hagedorn:MST_TMDL, Lowe:FocusMST,
-   Rivera:MSTCharacterization, Cornelison:MSTTools, Chase:FloridaMST}. This
-   field of study, \textit{Microbial source tracking} (MST) dates back to the
-   1960s with the use of fecal coliform-to-fecal streptococci ratios. In 1999,
-   the first review of MST techniques was published by Debby
+   between various sources of fecal bacteria in an environment have been
+   studied and developed~\cite{Sargeant:ReviewMST, Hagedorn:MST_TMDL,
+   Lowe:FocusMST, Rivera:MSTCharacterization, Cornelison:MSTTools,
+   Chase:FloridaMST}. This field of study, \textit{Microbial source tracking}
+   (MST) dates back to the 1960s with the use of fecal coliform-to-fecal
+   streptococci ratios. Many MST techniques rely on the genotypic or
+   phenotypic analyses of fecal indicator bacteria (FIB) such as fecal
+   coliforms, fecal enterococci, or \textit{Escherichia coli} (\textit{E.
+   coli}). FIB are bacteria that are found in the intestinal tracts of various
+   host animals and, when found, can be used to indicate or approximate the
+   level of fecal contamination in water~\cite{Simpson:StateOf}. In 1999, the
+   first review of MST techniques was published by Debby
    Sargeant~\cite{Sargeant:Methods}, followed by another review in November
-   2011~\cite{Sargeant:ReviewMST}. In her 2011
-   review of current MST methods, she describes the MST field as a new,
-   experimental field that has been continuously studying and developing new
-   methods over several years~\cite{Sargeant:ReviewMST}. Within the last couple
-   of years especially, there have been publications that provide notable
-   overviews of MST techniques and applications~\cite{Hagedorn:CaseStudies,
-   Domingo:Current, Harwood:RapidMethods}. Despite the highly experimental
-   nature of MST at this phase of its development, Sargeant claims that there
-   is strong pressure on natural resource managers to use these techniques to
-   identify bacterial sources of pollution~\cite{Sargeant:ReviewMST}.
+   2011~\cite{Sargeant:ReviewMST}. In her 2011 review of current MST methods,
+   she describes the MST field as a new, experimental field that has been
+   continuously studying and developing new methods over several
+   years~\cite{Sargeant:ReviewMST}. Fortunately, there have been publications
+   that provide notable overviews of MST techniques and
+   applications~\cite{Hagedorn:CaseStudies, Domingo:Current,
+   Harwood:RapidMethods} within the last couple of years. Despite the highly
+   experimental nature of MST at this phase of its development, Sargeant claims
+   that there is strong pressure on natural resource managers to use these
+   techniques to identify bacterial sources of
+   pollution~\cite{Sargeant:ReviewMST}.
 
-   The work described in this paper addresses one computational aspect of a
-   library-dependent MST technique developed by the Cal Poly Biology
-   department. As described by Sargeant, a library--for a library-dependent MST
-   technique--is a database of fingerprints from individual bacterial isolates,
-   obtained from potential fecal pollution sources.
-   
-   This type of MST technique
-   for tracking a source of fecal contamination includes genotypic and
-   phenotypic analyses of fecal indicator bacteria (FIB). FIB are bacteria that
-   are found in the intestinal tracts of various host animals and, when found,
-   can be used to indicate or approximate the level of fecal contamination in
-   water~\cite{Simpson:StateOf}. Common FIB for library-dependent MST
-   techniques include \textit{Escherichia coli} (\textit{E. coli}), fecal
-   coliforms, and fecal enterococci.
+   The work described in this paper addresses the comparison of fingerprints of
+   bacterial isolates for a library-dependent MST technique developed by the
+   Cal Poly Biology department. As described by Sargeant, the library used by a
+   library-dependent MST technique is a database of fingerprints from
+   individual bacterial isolates, obtained from potential sources of fecal
+   contamination. This library allows for the storage and retrieval of
+   bacterial fingerprints to identify and differentiate between bacterial
+   \textit{strains}--groups of bacterial isolates that have similar genotypes.
+   Bacterial isolates are considered part of the same strain if their
+   fingerprints are determined to be similar. Determining the source of a fecal
+   contamination relies on building an appropriately sized library. Once an
+   appropriately sized library has been built, it is then possible to associate
+   a bacterial isolate to the host species with which its determined bacterial
+   strain has previously been associated. Although not conclusively
+   established, this type of MST technique relies on the relationship between
+   bacterial strains and various host species. For instance, there are many
+   different kinds of \textit{E. coli}, some of which are only present in
+   humans, while others are only found in other species or particular regions
+   of the world. In this way, the library must be populated with bacterial
+   isolates collected from known species so that relationships between
+   bacterial strains and host species can emerge. Additionally, the selection
+   of an appropriate FIB is important and will affect interpretations of
+   analyses differently. Unfortunately, since the definition of a bacterial
+   strain is fuzzy and dependent on the research group and research task at
+   hand, the level of similarity required for two organisms be considered part
+   of the same strain is defined and established differently from research
+   group to research group.
 
-   The scope of my work is only concerned with how to compare profiles of
-   \textit{E. coli} isolates against a library and determine what is, and
-   isn't, a match. Interestingly, Sargeant claims that the MST field is moving
-   away from library-dependent methods and towards library-independent methods.
-   While the discussion of this topic is outside the scope of this thesis, it's
+   Interestingly, Sargeant claims that the MST field is moving away from
+   library-dependent methods and towards library-independent methods. While
+   the discussion of this topic is outside the scope of this thesis, it's
    worthwhile to mention that the reason for this is that library-dependent
    methods require a significant effort to build an appropriately large, useful
    library. The library also needs to include fingerprints relative to the
    environment being investigated. However, it is currently a more reliable,
    flexible MST technique that allows for the identification of hosts beyond
    humans and some domestic animal species.
-   
-   %That is, the choice of the Biology department to use a library-dependent
-   %MST technique was made before I joined and worked with the research group,
-   %and for brevity, I will be focusing only on the brief introduction of
-   %library-dependent methods, and then delve into the method described in this
-   %paper, \textit{pyroprinting}, and how my work supports this newly developed
-   %library-dependent MST technique.
-   %
-   %Among the various MST techniques described in Sargeant's review, the most
-   %important and relevant technique to the work described in this paper are
-   %library-dependent techniques.
+
    Generally, library-dependent methods being developed have shifted
    significantly towards genotypic analysis of collected bacteria and away from
    phenotypic analysis. Genotypic analysis strives to separate observed
    bacterial samples by differentiating between bacteral strains based on
-   fingerprints of the bacterial genome. When compared to phenotypic methods, genotypic
-   methods are advantageous since they use differences in nucleic acids to
-   distinguish between strains of \textit{E. coli} with greater
+   fingerprints of the bacterial genome. When compared to phenotypic methods,
+   genotypic methods are advantageous since they use differences in nucleic
+   acids to distinguish between strains of \textit{E. coli} with greater
    sensitivity~\cite{Anderson:Diversity, Gordon:StrainTyping, Ochman:Enzyme,
    Scott:CurrentMST, Simpson:StateOf}.
 
-   Library-dependent techniques require the storage and retrieval of microbial fingerprints to
-   identify and differentiate between microbial strains. Once an appropriately
-   sized library has been built, it is then possible to determine the source of
-   a fecal contamination by relating a bacterial isolate back to the host
-   species with which its identified bacterial strain has previously been
-   associated. Although not conclusively established, this type of MST
-   technique relies on the relationship between bacterial strains and various
-   host species. For this reason, the selection of an appropriate FIB is
-   important and will affect interpretations of analyses differently.
-   Additionally, the definition of a bacterial strain is fuzzy and dependent on
-   the research group and research task at hand. As a general concept, it is
-   a group of organisms of the same species that are genetically similar. The
-   amount of similarity of two organisms required to identify them as being of
-   the same strain is defined and established differently from research group
-   to research group. I detail our definition of a strain in Chapter
-   \ref{chap:background}.
-   
 \chapter{Background}\label{chap:background}
    %TODO include references for posters and other published material
    To address some of the common complaints regarding other methods of strain
@@ -246,7 +216,7 @@
    Simpson:StateOf}.
    
    Several students in the Biology department have conducted research projects
-   focusing on the use and applicability of pyroprinting.  Among the various
+   focusing on the use and applicability of pyroprinting. Among the various
    research projects, one student has established and piloted a novel framework
    for genotypic microbial analysis of bacteria (so far \textit{E. coli} only)
    in longitudinal studies~\cite{Montana:ChronoCluster, Montana:CRC}. This
@@ -256,13 +226,14 @@
    
    The work presented in this paper is the computational analysis which
    determines what bacterial isolates are of the same strain. More
-   specifically, in this paper, I compare the use of two clustering
+   specifically, this paper compares the use of two clustering
    algorithms--Hierarchical Agglomerative Clustering and OHClust!--in order to
-   characterize and better understand the performance, effects of parameter tuning,
-   and results of OHClust! for pyroprinting. I also go on to describe how
-   OHClust! can be useful when applied to other types of data. The rest of this
-   chapter fully explains the context of my work as well as establishes
-   terminology that will be used throughout the rest of this paper.
+   characterize and better understand the performance, effects of parameter
+   tuning, and results of OHClust! for pyroprinting. This paper also goes on to
+   describe how OHClust! can be useful when applied to other types of data. The
+   rest of this chapter fully explains the context of this work as well as
+   establishes terminology that will be used throughout the rest of this
+   paper.
 
    \section{Bacterial Sampling and Data Collection}\label{sec:sampling}
       The process of sampling begins with the selection of stool. From the
@@ -287,7 +258,8 @@
       associated metadata in a library, and then comparing fingerprints of
       isolates in the wild to known isolates in the library. Naturally, the
       library is a database, and to determine similar, or highly-related,
-      isolates we use clustering.
+      isolates we use clustering. Each cluster that a clustering algorithm
+      produces corresponds to an observable strain of bacteria.
 
    \section{Pyroprinting}\label{sec:pyroprinting}
       Pyrosequencing is a DNA sequencing process where a new strand of DNA,
@@ -467,8 +439,8 @@
       similarity between two pyroprints is high enough to warrant grouping
       their isolates together, or low enough to guarantee that their isolates
       should not be grouped together. Since these thresholds may vary depending
-      on the ITS region and the selected FIB, I associate each ITS region
-      $r_i$ with its own pair of thresholds, $\alpha_i$ and $\beta_i$.
+      on the ITS region and the selected FIB, each ITS region
+      $r_i$ is associated with its own pair of thresholds, $\alpha_i$ and $\beta_i$.
       More specifically, if the similarity between two pyroprints is greater
       than $\alpha$ ($sim(\bar{p_1}, \bar{p_2}) > \alpha$) then the two
       pyroprints are considered the same, or identical. Conversely, if
@@ -554,7 +526,6 @@
       isolates were collected. This process repeats%for each swabbing technique, and
       for each month in the study until clustering of all isolates in the structure
       is complete.
-
 
 \chapter{Algorithms}\label{chap:algorithm}
       Once strain similarity/dissimilarity of data points are quantified,
@@ -655,144 +626,307 @@
          \end{algorithmic}
 
 \chapter{Related Work}\label{chap:related}
+
+   \section{Incremental Clustering}\label{sec:incr_cluster}
+   Since OHClust! is claimed to be applicable to data types other than
+   biological, this section discusses incremental clustering algorithms
+   developed for generic datasets. These algorithms were developed to
+   incrementally cluster data streams or datasets too large to fit in main
+   memory. While this definition of incremental clustering is still applicable
+   and relevant to our notion of incremental clustering, there are some
+   assumptions that may cause divergence between the optimal clustering of a
+   growing dataset and proposed clustering of these algorithms. More
+   specifically, clustering a dataset in increments, still has the assumptions
+   of a single, whole dataset. In contrast, clustering a dataset that is
+   updated in increments has the assumptions that the ideal number of clusters
+   may change between updates. The subtle difference may make a difference in
+   how quickly produced clusters diverge from optimal clusters, and thus affect
+   how frequently the accumulated dataset must be re-clustered.
+
+   %BIRCH description%
+   BIRCH, Balanced Iterative Reducing and Clustering using Hierarchies, is a
+   clustering method developed by Zhang, et al. to address the problem of
+   clustering large datasets and minimizing I/O costs~\cite{Zhang:BIRCH}. BIRCH
+   incrementally clusters numerical data by doing a scan of the target dataset
+   until memory constraints are reached. Each chunk of data is added to an
+   N-ary tree, called a cluster feature (CF) tree, which represents clusters as
+   internal nodes and maintains only aggregate information for each cluster.
+   The aggregate information, and clustering requirements, are computed based
+   on basic algebraic functions: Each data point is represented as a triple of
+   the form $D = (N, LS, SS)$ where a data point $D$ is assumed to be a vector,
+   $N$ is the number of dimensions, $LS$ is the linear sum of the dimensions of
+   $D$, and $SS$ is the squared sum of the dimensions of $D$. In this way,
+   distances (not similarities) are additive and easily computed in a single
+   scan of the data. This approach uses the CF Tree as a fast, guiding method
+   for directing a data point to the appropriate cluster. However, determining
+   an appropriate, meaningful CF representation is difficult at best.
+
+   %Fast and Stable Incremental Clustering description%
+   Young, et al.'s work on incremental clustering takes a 
+   partitional approach to clustering~\cite{Young:Incremental}. The described
+   work utilizes a competitive learning algorithm that adjusts itself based on
+   a calculated pseudo-entropy of the clusters such that a
+   tradeoff is made between updating centroids aggressively earlier in the
+   clustering process (earlier iterations and/or updates)
+   and updating centroids conservatively later to ensure cluster stability.
+   Additionally, there is a credit-based algorithm for preventing centroid
+   starvation which is computed based on a fixed value or the previously
+   calculated pseudo-entropy such that centroids selected for updates lose
+   credit and centroids that are starving accumulate credit over time. Although
+   Young, et al. mention the importance of being mindful of the possibility
+   that clusters may move, disappear, or reappear, the described work only
+   discusses moving centroids and assumes a fixed number of centroids. Since
+   the number of clusters that may be formed from clustering pyroprints is
+   completely unknown, and will grow unpredictably as more data is gathered
+   from different regions, a partitional scheme with a fixed number of
+   centroids is not very applicable.
+
+   \section{Incremental Clustering for 16S rRNA Sequences}\label{sec:seq_incr_cluster}
+   This section discusses incremental clustering algorithms that were
+   developed specifically for clustering DNA sequence reads. These are
+   especially relevant to the work described in this paper as OHClust! was
+   developed with pyroprints in mind. Incremental clustering algorithms
+   described in this section are all derived from a greedy incremental sequence
+   clustering algorithm, hereafter referred to as \textit{SeqClustering} for
+   brevity, developed in 1998 by Holm and Sander~\cite{Holm:Greedy}. The
+   motivation for this incremental clustering algorithm was to effectively
+   handle continuously growing biological datasets, specifically protein
+   sequences, and to efficiently determine and convey clusters of similar
+   protein sequences. Due to the high volume of redundant protein sequence
+   reads, Holm and Sander decided that each cluster should be represented by a
+   single data point, or sequence read. By using a representative data point
+   for each cluster, it was much more efficient to compute cluster membership
+   for each unclustered data point and to convey meaningful, non-redundant
+   information for understanding each cluster. Variants of this clustering
+   algorithm refer to the representative sequence read of a cluster as a
+   \textit{seed}. This algorithm, as well as its variants such as
+   CD-HIT~\cite{Li:CD_Hit}, UCLUST~\cite{Edgar:UCLUST}, and
+   DySC~\cite{Zheng:DySC}, cluster DNA sequences by using a single sequence as
+   a cluster representative to which unclustered DNA sequences are aligned
+   against. That is, DNA sequences are data points, and each cluster is
+   represented by a single data point, against which other data points are
+   compared. The comparison metric used is typically a sequence alignment,
+   which gives a similarity score based on the edit distance between the
+   compared sequences.
+
+   One variant of Holm and Sander's SeqClustering algorithm is cd-hit and each
+   of its variants: cd-hit-2d, cd-hit-est, cd-hit-est-2d~\cite{Li:CD_Hit,
+   Li:Redundancy}. Cd-hit has SeqClustering as its core algorithm, but
+   optimizes performance by using short word filtering instead of sequence
+   alignments as its comparison metric. Short word filtering, in short,
+   verifies that the compared sequences share a minimum number of identical
+   short substrings, referred to as `words', such as dipeptides, tripeptides,
+   etc. For certain length words, it's possible to have indices of the seed for
+   a cluster so that it is very fast to compare a sequence to the seed via
+   short word filtering.
+
+   %DySC Greedy Clustering Description%
+   Another, very relevant, variant of the SeqClustering algorithm, called
+   dynamic seed clustering (DySC), was developed by Zheng, et
+   al.~\cite{Zheng:DySC}. DySC is a clustering algorithm developed for reads of
+   the 16S rRNA marker gene commonly used in microbial studies.  DySC
+   differentiates itself from other SeqClustering algorithms by using both
+   fixed seeds and dynamic seeds. Seeds in SeqClustering correspond to a fixed
+   seed in DySC, whereas SeqClustering has no equivalent to dynamic seeds in
+   DySC. Using dynamic seeds, DySC constructs \textit{pending clusters},
+   clusters containing reads that are not within a similarity threshold to the
+   fixed seeds. Pending clusters are transient and will either join a fixed
+   seed cluster or become a fixed seed cluster after reaching a specified size.
+   Zheng, et al. claim that DySC is able to improve cluster quality while
+   maintaining comparable runtime compared to UCLUST and
+   CD-HIT~\cite{Zheng:DySC}.
+
    %Incremental Clustering Description%
    Yooseph, et al. have done work on the incremental clustering of microbial
    metagenomic sequence data~\cite{Yooseph:Incremental}. Incremental clustering
-   is a three stage clustering process. \textbf{First Stage}. patterns are
-   combined with clusters in three steps, each with 90\%, 75\%, and 60\%
-   identity thresholds, respectively. Incremental clustering, based on
-   cd-hit-2d, uses three steps with decreasing identity thresholds for
-   efficiency and quality. For efficiency, cd-hit-2d runs faster
-   at high thresholds (90\%) than at low thresholds (60\%). For quality, the
-   parallel implementation of cd-hit-2d being used by Yooseph, et al. at the time
-   (2008) could only assign patterns to the first cluster whose similarity met
-   the threshold. \textbf{Second Stage}. Patterns from the data set not
-   incorporated into clusters in stage one are clustered together using cd-hit
-   at 90\%, 75\%, and 60\% identity. The clusters formed here are referred to
-   as \textit{core clusters} by Yooseph, et al. \textbf{Third Stage}. Two similarity
-   measures are used to join \textit{big core clusters} (cluster with
-   cardinality $\ge$ 20) with each other and small core clusters or singleton
-   clusters (cluster with cardinality $=$ 1) with final clusters, respectively
-   FFAS and PSI-BLAST.
-
-   %Incremental Clustering relation%
-   In much the same way that incremental clustering uses three steps for
-   clustering, OHClust! seeks to improve clustering performance and
-   quality by using two steps using $\alpha$ and $\beta$ thresholds,
-   respectively. However, an interesting, though perhaps minimal, difference in
-   our clustering algorithms is that during the first step of OHClust!
-   clusters equivalent to incremental clustering's core clusters are being formed.
-   Furthermore, OHClust! partitions its target data set in order to direct the
-   order of clustering, which incremental clustering does not do.
-
-   Temporal clustering, as described by Kamath and
-   Caverlee~\cite{Kamath:Transient}, is a variation of clustering that models
-   data as a communication network. Nodes represent members in the
-   communication network while edge weights represent communication between
-   said nodes. The edge weights in the network are based on when the messages
-   are exchanged.
-
-   Kamath and Caverlee utilize 3 different edge weight decay functions to reflect temporal
-   locality. Their naive function decrements edge weights by 1 between two nodes
-   where a message was not exchanged by the two nodes during a
-   specific time interval. Otherwise the edge weight is incremented by 1. Another
-   suggested decay function, \textit{fixed window}, only utilizes edge weights
-   where communication occured during a time window $\beta$. Edge weights are
-   ignored if communication between two nodes occurs outside of this time window. 
-   The final edge weight decay function proposed, \textit{exponential decay}, is
-   the final function proposed in \cite{Kamath:Transient} and was the chosen
-   function used in Kamath and Caverlee's temporal clustering. This uses a
-   parameter $\xi$ that is used to identify crowds gathering at
-   relative rates. A higher $\xi$ is used for identifying crowds which form
-   quickly and a lower $\xi$ identifies crowds forming slowly. More formally:
-   \textit{Messages not exchanged:}
-      \begin{description}
-         \item w$_{t}$(u, v) = w$_{t - 1}$(u, v) - log(T$_{now}$ - $\tau$(u, v))
-               $\times$  $\xi$ 
-      \end{description}
-
-   \textit{Messages exchanged:}
-      \begin{description}
-         \item w$_{t}$(u, v) = w$_{t - 1}$(u, v) + 1 - log(T$_{now}$ - $\tau$(u, v))
-               $\times$  $\xi$ 
-      \end{description}
-   $\tau$(u, v) is the time of the last communication between nodes u and v. This
-   way the longer the gap in communication between two nodes, the lower the edge
-   weight connecting the two nodes.
-
-   Qamra, Tseng, and Chang~\cite{Qamra:BlogMining} suggest a \textit{modified time-sensitive
-   dirichlet process model} based on \cite{Jhu:Dirichlet}. This clustering
-   algorithm is similar to the Chinese Restaurant Process but also incorporates
-   time~\cite{Qamra:BlogMining}. The probability of joining a group (cluster) depends on the
-   group members and their respective ages. There is also some probability,
-   determined by a \textit{concentration parameter}, that a new cluster will be
-   formed. As group members age, their respective influence in the group decays.
-   the time-sensitive dirichlet in \cite{Jhu:Dirichlet} was modified by Qamra, et al.
-   to calculate a uniform probability of being assigned a new cluster. The
-   decay of a blog story's influence in a cluster is controlled by a kernel
-   function so that new entries are less likely to join older stories.
+   is a three stage clustering process based on CD-HIT. \textbf{First Stage}.
+   patterns are combined with clusters in three steps, each with 90\%, 75\%,
+   and 60\% identity thresholds, respectively. Incremental clustering takes
+   this approach of decreasing identity thresholds for efficiency and quality.
+   For efficiency, cd-hit-2d runs faster at high thresholds (90\%) than at low
+   thresholds (60\%). For quality, the parallel implementation of cd-hit-2d
+   being used by Yooseph, et al. at the time (2008) could only assign patterns
+   to the first cluster whose similarity met the threshold. \textbf{Second
+   Stage}. Patterns from the data set not incorporated into clusters in stage
+   one are clustered together using cd-hit at 90\%, 75\%, and 60\% identity.
+   The clusters formed here are referred to as \textit{core clusters} by
+   Yooseph, et al. \textbf{Third Stage}. Two similarity measures are used to
+   join \textit{big core clusters} (cluster with cardinality $\ge$ 20) with
+   each other and small core clusters or singleton clusters (cluster with
+   cardinality $=$ 1) with final clusters, respectively FFAS and PSI-BLAST.
    
-   \textit{PoClustering} (partially ordered clustering) clusters data into
-   \textit{PoSets} (partially ordered sets) by finding all clique clusters for
-   all possible diameters W(D) where D is the maximal dissimilarity in a
-   dissimilarity matrix~\cite{Liu:CPD}. PoClustering is a generalization of both
-   hierarchical and pyramidal clustering that allows overlaps between clusters such that a
-   PoCluster P is defined as P = \{cliqueset $_{\delta}$ (d) $\mid$ $\forall$ d $\in$
-   W(D)\}~\cite{Liu:PoClustering}. This ensures that PoClusters contain every
-   possible cluster with largest dissimilarity d. Additionally, hierarchical
-   and pyramidal clustering produce clusters that are subsets (special cases) of
-   PoClusters. PoClusters can be represented as a directed acyclic graph, with
-   each node representing a clique cluster and its diameter, and each edge
-   representing subset relationships between nodes. PoClusters are able to
-   successfully preserve the majority of relationships present in the data
-   whereas hierarchical clustering is unable to do so.
+   %Relate algorithms to work%
+   Each variant of the SeqClustering algorithm is highly relevant to OHClust!
+   in their ability to cluster data incrementally and their relevance to
+   biological data. Using a seed, or cluster representative, that is $\le 90\%$
+   similar to all other seeds allows new clusters to easily form, which is
+   important to consider for a continuously growing dataset. Interestingly,
+   Yooseph, et al.'s work on incremental clustering and its three phase
+   approach seems to be the most similar to OHClust!. Where Yooseph, et al.
+   takes a three phase approach, OHClust! seeks to improve clustering
+   performance and quality in a two phase approach. The first phase creates
+   core clusters using the $\alpha$ threshold, and the second phase
+   incorporates pyroprints into a boundary or fuzzy cluster using the $\beta$
+   threshold. However, incremental clustering partitions its data in a three
+   tier scheme by thresholds (90\%, 75\%, and 60\%) instead of the hierarchical
+   partitioning employed by OHClust!.
+   
+   Seemingly, these algorithms are more accommodating of updates than
+   incremental clustering in Section \ref{sec:incr_cluster} and can handle
+   situations where constructed clusters may significantly differ from initial
+   predictions of observable patterns. In this way, these algorithms may be
+   more amenable to incremental clustering across updates than OHClust!.
+   However, there is a major aspect in which SeqClustering algorithms differ
+   from OHClust!: the use of a core cluster in OHClust! instead of a
+   representative data point. Instead of a representative data point, the use
+   of core clusters potentially reduces clustering errors of pyroprints,
+   especially across updates. This is especially important since pyroprints are
+   not exactly DNA sequences and are vulnerable to machine and human error.
+   Additionally, cluster similarity is computed using each point in the cluster
+   (in the case of average-link or ward's method) instead of a single
+   comparison. Due to this being computationally more expensive, the advantages
+   and disadvantages of not using cluster representatives are explored in
+   Chapter \ref{chap:evaluation}.
 
-   Temporal clustering and time-sensitive dirichlet modify similarity measures in
-   context of the temporal locality of particular events of interest. This is
-   slightly different from the method we propose in this paper, as we do not
-   modify similarity measures of \textit{E. coli} isolates based on chronological distance. 
-   Instead, we simply enforce a particular ordering on cluster candidates. 
-   Similarly, PoClustering enforces a particular ordering on the clustering process without
-   modifying similarity measures. Although PoClustering is not
-   time-sensitive, it is important related work for our method regarding
-   connectivity constraints between \textit{E. coli} isolates. 
+   %Temporal clustering, as described by Kamath and
+   %Caverlee~\cite{Kamath:Transient}, is a variation of clustering that models
+   %data as a communication network. Nodes represent members in the
+   %communication network while edge weights represent communication between
+   %said nodes. The edge weights in the network are based on when the messages
+   %are exchanged. Kamath and Caverlee utilize 3 different edge weight decay
+   %functions to reflect temporal locality. Their naive function decrements edge
+   %weights by 1 between two nodes where a message was not exchanged by the two
+   %nodes during a specific time interval. Otherwise the edge weight is
+   %incremented by 1. Another suggested decay function, \textit{fixed window},
+   %only utilizes edge weights where communication occured during a time window
+   %$\beta$. Edge weights are ignored if communication between two nodes occurs
+   %outside of this time window. The final edge weight decay function proposed,
+   %\textit{exponential decay}, is the final function proposed in
+   %\cite{Kamath:Transient} and was the chosen function used in Kamath and
+   %Caverlee's temporal clustering. This uses a parameter $\xi$ that is used to
+   %identify crowds gathering at relative rates. A higher $\xi$ is used for
+   %identifying crowds which form quickly and a lower $\xi$ identifies crowds
+   %forming slowly. More formally:
+   %\textit{Messages not exchanged:}
+      %\begin{description}
+         %\item w$_{t}$(u, v) = w$_{t - 1}$(u, v) - log(T$_{now}$ - $\tau$(u, v))
+               %$\times$  $\xi$ 
+      %\end{description}
 
-   Primer5~\cite{Primer5:methods} is a hierarchical clustering tool commonly used by biologists.
-   Hierarchical clustering works by iteratively combining clusters until there is
-   one cluster remaining~\cite{DataMining}. We use
-   Primer5 as a benchmark to compare our algorithm against.
+   %\textit{Messages exchanged:}
+      %\begin{description}
+         %\item w$_{t}$(u, v) = w$_{t - 1}$(u, v) + 1 - log(T$_{now}$ - $\tau$(u, v))
+               %$\times$  $\xi$ 
+      %\end{description}
+   %$\tau$(u, v) is the time of the last communication between nodes u and v. This
+   %way the longer the gap in communication between two nodes, the lower the edge
+   %weight connecting the two nodes.
 
+   %Qamra, Tseng, and Chang~\cite{Qamra:BlogMining} suggest a \textit{modified
+   %time-sensitive dirichlet process model} based on work by Jhu, et
+   %al.~\cite{Jhu:Dirichlet}. This clustering algorithm is similar to the
+   %Chinese Restaurant Process but also incorporates
+   %time~\cite{Qamra:BlogMining}. The probability of joining a group (cluster) depends on the
+   %group members and their respective ages. There is also some probability,
+   %determined by a \textit{concentration parameter}, that a new cluster will be
+   %formed. As group members age, their respective influence in the group decays.
+   %The time-sensitive dirichlet discussed by Jhu, et al.~\cite{Jhu:Dirichlet}
+   %was modified by Qamra, et al. to calculate a uniform probability of being
+   %assigned a new cluster. The decay of a blog story's influence in a cluster
+   %is controlled by a kernel function so that new entries are less likely to
+   %join older stories.
+
+   %\textit{PoClustering} (partially ordered clustering) clusters data into
+   %\textit{PoSets} (partially ordered sets) by finding all clique clusters for
+   %all possible diameters W(D) where D is the maximal dissimilarity in a
+   %dissimilarity matrix~\cite{Liu:CPD}. PoClustering is a generalization of both
+   %hierarchical and pyramidal clustering that allows overlaps between clusters such that a
+   %PoCluster P is defined as P = \{cliqueset $_{\delta}$ (d) $\mid$ $\forall$ d $\in$
+   %W(D)\}~\cite{Liu:PoClustering}. This ensures that PoClusters contain every
+   %possible cluster with largest dissimilarity d. Additionally, hierarchical
+   %and pyramidal clustering produce clusters that are subsets (special cases) of
+   %PoClusters. PoClusters can be represented as a directed acyclic graph, with
+   %each node representing a clique cluster and its diameter, and each edge
+   %representing subset relationships between nodes. PoClusters are able to
+   %successfully preserve the majority of relationships present in the data
+   %whereas hierarchical clustering is unable to do so.
+
+   %Temporal clustering and time-sensitive dirichlet modify similarity measures
+   %in context of the temporal locality of particular events of interest. This
+   %is slightly different from the method we propose in this paper, as we do not
+   %modify similarity measures of \textit{E. coli} isolates based on
+   %chronological distance. Instead, we simply enforce a particular ordering on
+   %cluster candidates based on a given, defined ontological structure. 
+   %Similarly, PoClustering enforces a particular ordering on the clustering
+   %process without modifying similarity measures. Although PoClustering is not
+   %time-sensitive, it is important related work for our method regarding
+   %connectivity constraints between \textit{E. coli} isolates.
+
+   %TODO
 \chapter{Implementation}\label{chap:implementation}
+   %The implementation described in this chapter was done in Java, and compliant
+   %with Java 1.6 since the majority of users have Java 1.6 installed, not Java
+   %1.7. Additionally, the code is accessible from the SPAM repository on my
+   %GitHub account\footnote{http://www.github.com/drin/spam}. This chapter also
+   %has a dual purpose of describing how the algorithm has been implemented, and
+   %providing a reference of documention for anyone desiring to use or extend
+   %the code provided.
 
    \section{SPAM - Suite of Pyroprint Analysis Methods}\label{sec:spam}
+      This section discusses the implementation of the framework
+      \textit{SPAM}--Suite of Pyroprint Analysis Methods. This framework is
+      written such that many components can be written consistently and
+      interchangeably, including clustering methods, comparison metrics, and
+      data types. In Section \ref{sec:design} the overall design of
+      the framework is described, while Sections \ref{sec:data_types} and \ref{sec:metrics}
+      discuss how data types can be written, and how comparison metrics are
+      called and can be implemented, respectively. Finally, Section
+      \ref{sec:analysis} details how analysis methods--particularly
+      hierarchical clustering methods--can be extended and customized.
+
       \subsection{Design}\label{sec:design}
+         The framework was designed to be modular. Particularly, it was desired
+         that it would be easy to swap comparison metrics and clustering
+         methods. In order to do this, an abstract approach for defining and
+         using various data types had to be designed.
+         
+         The basic design is that custom data types extend a
+         \textit{Clusterable} abstract class interface.
+
+
          However, to ensure a flexible and
          maintainable system, isolates are represented as a complex data point
          that is associated with \textit{ITS Regions} and \textit{Pyroprints}.
 
+      \subsection{Data Types}\label{sec:data_types}
+
+      \subsection{Comparison Metrics}\label{sec:metrics}
+
+      \subsection{Analysis Methods}\label{sec:analysis}
+
 \chapter{Evaluation}\label{chap:evaluation}
-   For evaluation of OHClust!, I compare resulting clusters against the
+   For evaluation of OHClust!, resulting clusters are compared against the
    clusters of \textit{Agglomerative Hierarchical
    Clustering}--\textit{HClustering} for short. Given the wide use of
-   HClustering by biologists on biological datasets, I choose HClustering as
+   HClustering by biologists on biological datasets, HClustering is used as
    the baseline to compare OHClust! against. Preliminary results on the
    comparison of accuracy was done in a previous case
-   study~\cite{Montana:ChronoCluster}, but, in this section, I compare the
-   clusters produced by the two algorithms more thoroughly, on larger, more
-   complex datasets, and analyze both algorithms for their performance. In many
-   cases, I expect OHClust! to produce clusters $C$ that are a
-   \textit{refinement} of clusters from HClustering, $C'$.  That is, each
+   study~\cite{Montana:ChronoCluster}, but, in this section, the
+   clusters produced by the two algorithms are compared more thoroughly, on larger, more
+   complex datasets, and both algorithms are analyzed for their performance. In many
+   cases, OHClust! is expected to produce clusters $C$ that are a
+   \textit{refinement} of clusters from HClustering, $C'$. That is, each
    cluster $C_i \in C$ is contained in a cluster of $C'_k \in C'$,
    formally\footnote{This definition of refined clusters comes from
    Wagner~\cite{Wagner:Overview}}:
-   $$\forall C_i \in C, \exists C'_k \in C' : C_i \subseteq C'_k$$
-   Below, I layout both my hypothesis and evaluation plan before discussing
+   $$\forall C_i \in C, \exists C'_k \in C' : C_i \subseteq C'_k$$.
+   Below, both the hypothesis and evaluation plan are described before discussing
    results in Section \ref{sec:results} and relevant conclusions in Section
    \ref{sec:conclusion}.
 
    \section{Hypothesis}\label{sec:eval_goals}
-      For the comparison between OHClust! and HClustering, I expect that the
-      resulting clusters of both algorithms will be largely similar. This is
+      For the comparison between OHClust! and HClustering, the resulting
+      clusters of both algorithms are expected to be largely similar. This is
       formalized by the null hypothesis $H_0: VI(C, C')$ is very close to $2/n$
       (Not yet actually determined). $VI(C, C')$ is the variation of
       information~\cite{Halkidi:Validation} between the set of OHClust!
@@ -808,12 +942,12 @@
       probability that an element $x$, at random, is in the cluster $C_i \in C$
       and $P(i, j)$ is the probability that an element $x$ is in the clusters
       $C_i \in C$ and $C'_j \in C'$, where $|C_i \cap C'_j|$ is the size of the
-      intersection between clusters $C_i$ and $C'_j$.  shannon's entropy,
-      $H(C)$, can then be calculated for $C$ and $C'$.  Relating the entropy of
+      intersection between clusters $C_i$ and $C'_j$. shannon's entropy,
+      $H(C)$, can then be calculated for $C$ and $C'$. Relating the entropy of
       both sets of clusters, $H(C)$ and $H(C')$, we then calculate the mutual
       information between $C$ and $C'$, $I(C, C')$.
 
-      Additionally, I expect that while the performance of OHClust! and
+      Additionally, it is expected that while the performance of OHClust! and
       HClustering should be relatively similar for a given raw dataset,
       OHClust! will perform much faster than HClustering when given additional
       data, that still fits the ontology specified, to be clustered. This
@@ -824,13 +958,15 @@
       dataset when new data is introduced.
 
    \section{Evaluation Plan}\label{sec:eval_plan}
-      My evaluation plan focuses on the question \textit{how does the performance of
-      OHClust! compare to HClustering?} While at the
-      same time ensuring that \textit{The clusters formed by OHClust! and
-      HClustering do not diverge significantly.} Since I do not
-      have a clear idea of what resulting clusters \textbf{should} look like, I
-      show that the clusters formed by each algorithm are similar enough to
-      each other that accuracy is not an issue.
+      The evaluation plan detailed in this section focuses on the question
+      ``how does the performance of OHClust! compare to HClustering?'' while at
+      the same time ensuring that \textit{The clusters formed by OHClust! and
+      HClustering do not diverge significantly.} The divergence between
+      HClustering and OHClust! is important to consider since there is no clear idea
+      of what resulting clusters \textbf{should} look like, so by showing that
+      the clusters formed by each algorithm are similar enough to each other,
+      it can be seen that OHClust! is no less accurate than HClustering, and
+      thus, accuracy is not an issue.
 
       My evaluation plan is motivated by the following evaluation goals:
       \begin{itemize}
@@ -872,7 +1008,7 @@
                   \item Average-link
                \end{itemize}
       \end{itemize}
-      Some properties of the two algorithms I am interested in observing:
+      Some properties of the two algorithms that should be observed:
       \begin{itemize}
          \item Compactness--members within a cluster should be as similar, or
                close, as possible.
@@ -882,9 +1018,9 @@
 
       (This is written as if the tests are already done) While there are many
       parameters that can be tuned to characterize the behaviors of OHClust!,
-      I am not interested in comparing the results from all configurations of
-      OHClust! with all configurations of HClustering. The tests I have ran are
-      of all configurations of OHClust! compared against each other, and the
+      It is unnecessary to compare the results from all configurations of
+      OHClust! with all configurations of HClustering. The tests that have been
+      ran include several configurations of OHClust! compared against each other, and the
       comparison of one configuration of HClustering to the same configuration
       of OHClust!. The different configurations of OHClust! that were tested
       can be seen in Figure \ref{tab:ohclust_configs}.
