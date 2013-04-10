@@ -33,6 +33,9 @@
    \usepackage{subfig}
    \usepackage{multirow}
 
+   \usepackage[utf8]{inputenc}
+   \usepackage[russian,english]{babel}
+
 %paper formatting
    \setlength{\parindent}{0.25in} \setlength{\parskip}{6pt}
    \geometry{verbose,nohead,tmargin=1.25in,bmargin=1in,lmargin=1.5in,rmargin=1.3in}
@@ -57,7 +60,7 @@
    \othermemberA{Chris Lupo, Ph.D.}
    \othermemberB{Tim Kearns, Ph.D.}
    \othermemberC{Michael Black, Ph.D.}
-   \othermemberD{Eriq Augustine, Ph.D.}
+   \othermemberD{Eriq Augustine, M.S.}
 \copyrightyears{seven}
 
 \maketitle
@@ -69,29 +72,46 @@
    \committeemembershippage
 
    \begin{abstract}
-      Pyroprinting is a novel, library-dependent microbial source
-      tracking (MST) method developed by the biology department at Cal Poly,
-      San Luis Obispo. This method consists of two parts: (1) sample collection
-      and pyroprinting (2) comparison of produced pyroprints against a
-      database. Cal Poly Library of Pyroprints (CPLOP) is a web-based database
+      Pyroprinting is a novel, library-dependent microbial source tracking
+      (MST) method developed by the biology department at Cal Poly, San Luis
+      Obispo. This method consists of two parts: (1) sample collection and
+      pyroprinting (2) comparison of produced pyroprints against a database.
+      Cal Poly Library of Pyroprints (CPLOP) is a web-based database
       application that provides storage and analysis of pyroprints. CPLOP
       currently contains 4500 pyroprints and is growing rapidly as students and
-      researchers continue adding data. Hierarchical clustering, the
-      traditional method of analysis used by biologists, is inadequate. While
-      the clusters it produces are acceptable, pyroprinting requires a new
-      method of analysis that is both scalable and flexible. Hierarchical
-      clustering falls short in these regards as it is unable to efficiently
-      cluster new data with already clustered data and it is incapable of
-      utilizing available metadata. We propose ontology-based hierarchical
-      clustering (\textit{OHClust!}), a modification of hierarchical clustering
-      that uses an ontology to direct the order in which data is clustered. In
-      this paper we discuss the strengths and weaknesses of OHClustering and
-      analyze its performance in comparison to hierarchical clustering.
+      researchers continue adding data. Agglomerative hierarchical clustering,
+      the traditional method of analysis used by biologists, is inadequate.
+      While the clusters it produces are acceptable, pyroprinting requires a
+      new method of analysis that is both scalable and flexible. Agglomerative
+      hierarchical clustering falls short in these regards as it is unable to
+      efficiently cluster new data with already clustered data and it is
+      incapable of utilizing available metadata. We propose ontology-based
+      hierarchical clustering (\textit{OHClust!}), a modification of
+      hierarchical clustering that uses an ontology to direct the order in
+      which data is clustered. In this paper we discuss the strengths and
+      weaknesses of OHClust! and analyze its performance in comparison to
+      agglomerative hierarchical clustering.
    \end{abstract}
 
    \begin{acknowledgements}
-      This work was supported in part by an undergraduate education grant from
-      the W.M. Keck foundation.
+      This work was supported in part by undergraduate education grants from:
+      \begin{itemize}
+         \item The W.M. Keck Foundation
+         \item The National Science Foundation
+      \end{itemize}
+      I would like to thank:
+      \begin{itemize}
+         \item The department staff, especially Christy, my CSC mom.
+         \item Emily Neal for being awesome and patient in working with me.
+         \item My family and friends, with special thanks to my mom, step dad,
+               and dad, for all that they've done to support me.
+         \item Alex Dekhtyar for being the best adviser I could have asked for.
+               I believe all of my growth can be attributed to the guidance
+               that Alex has provided me.
+         \item \foreignlanguage{russian}{квас} for always being there to soothe the soul.
+         \item My roommates who have always provided me with a family away from
+               home. Our unity is strong.
+      \end{itemize}
    \end{acknowledgements}
 
    \tableofcontents
@@ -110,15 +130,16 @@
 
 \chapter{Introduction}\label{chap:intro}
    To maintain the cleanliness of current ``fishable and swimmable'' bodies of
-   water, and improve the cleanliness of others, health and environmental
-   protection agencies have been interested in the ability to track sources of
-   fecal contamination at the species level~\cite{Scott:CurrentMST,
-   Simpson:StateOf, Desmarais:SoilInfluence}. Investigating fecal contamination
+   water, and improve the cleanliness of other bodies of water, health and
+   environmental protection agencies have been interested in the ability to
+   track sources of fecal contamination at the species
+   level~\cite{Scott:CurrentMST, Simpson:StateOf, Desmarais:SoilInfluence}.
+   Identifying the animal species from which a fecal contamination originates
+   is an important first step in controlling fecal contamination and managing
+   bacterial risks by enabling natural resource managers to address the problem
+   of fecal contamination at its source. Investigation of fecal contamination
    is especially necessary in waters used for human recreation where dangerous
-   pathogens are transferable. Further, relating a fecal contamination back to
-   a particular species is an important first step in controlling fecal
-   contamination and managing bacterial risks by enabling natural resource
-   managers to address fecal contamination at its source.
+   pathogens are transferable. 
 
    Within the last decade, several techniques of identifying and descriminating
    between various sources of fecal bacteria in an environment have been
@@ -130,9 +151,10 @@
    phenotypic analyses of fecal indicator bacteria (FIB) such as fecal
    coliforms, fecal enterococci, or \textit{Escherichia coli} (\textit{E.
    coli}). FIB are bacteria that are found in the intestinal tracts of various
-   host animals and, when found, can be used to indicate or approximate the
-   level of fecal contamination in water~\cite{Simpson:StateOf}. In 1999, the
-   first review of MST techniques was published by Debby
+   host animals, and are still present in the host animal's stool. When found,
+   FIB can be used to indicate or approximate the level of fecal contamination
+   in, or near, a body of water~\cite{Simpson:StateOf}. In 1999, the first
+   review of MST techniques was published by Debby
    Sargeant~\cite{Sargeant:Methods}, followed by another review in November
    2011~\cite{Sargeant:ReviewMST}. In her 2011 review of current MST methods,
    she describes the MST field as a new, experimental field that has been
@@ -146,29 +168,41 @@
    techniques to identify bacterial sources of
    pollution~\cite{Sargeant:ReviewMST}.
 
-   The work described in this paper addresses the comparison of fingerprints of
+   This thesis addresses the comparison of DNA fingerprints of
    bacterial isolates for a library-dependent MST technique developed by the
-   Cal Poly Biology department. As described by Sargeant, the library used by a
-   library-dependent MST technique is a database of fingerprints from
-   individual bacterial isolates, obtained from potential sources of fecal
-   contamination. This library allows for the storage and retrieval of
-   bacterial fingerprints to identify and differentiate between bacterial
-   \textit{strains}--groups of bacterial isolates that have similar genotypes.
-   Bacterial isolates are considered part of the same strain if their
-   fingerprints are determined to be similar. Determining the source of a fecal
-   contamination relies on building an appropriately sized library. Once an
-   appropriately sized library has been built, it is then possible to associate
-   a bacterial isolate to the host species with which its determined bacterial
-   strain has previously been associated. Although not conclusively
+   Cal Poly Biology department. As described by Sargeant, a library-dependent
+   MST technique relies on a database, called the library, which contains
+   genotypic information of the FIB being studied. For the work presented in
+   this thesis, the library consists of DNA fingerprints from \textit{E. coli}
+   isolates. The workflow for a library-dependent MST technique starts with the
+   collection of a large number (varies based on the size and diversity of the
+   environment being studied) of bacterial isolates from a variety of known
+   host species. Specifically, isolates of a particular FIB are collected, based on
+   the type of environment and animals in the study. Then, genotypic analysis is
+   then applied to collected bacterial isolates and resulting data is stored in
+   the library. The accumulated genotype information of bacterial isolates
+   composes the required characterization of \textit{bacterial strains} in the
+   target environment necessary for determining the host animal species from
+   which collected bacterial isolates originate. The definition of a strain
+   varies from research group to research group, but in this work a bacterial
+   strain is a group of bacterial isolates that have similar genotypes. Once
+   the library has reached an appropriate size for the environment of interest,
+   it is possible to collect bacterial isolates with unknown host specie
+   origins from the environment and compare its genotype to bacterial isolates in
+   the library. The comparison can then identify the bacterial strain most
+   similar to the collected bacterial isolate and determine the host specie
+   from which it originates. More specifically, for the work described in this
+   thesis, bacterial isolates are considered part of the same strain if their
+   DNA fingerprints are determined to be similar. Although not conclusively
    established, this type of MST technique relies on the relationship between
    bacterial strains and various host species. For instance, there are many
    different kinds of \textit{E. coli}, some of which are only present in
    humans, while others are only found in other species or particular regions
-   of the world. In this way, the library must be populated with bacterial
-   isolates collected from known species so that relationships between
-   bacterial strains and host species can emerge. Additionally, the selection
-   of an appropriate FIB is important and will affect interpretations of
-   analyses differently. Unfortunately, since the definition of a bacterial
+   of the world. With this consideration, the library must be populated with
+   bacterial isolates collected from known species so that relationships
+   between bacterial strains and host species can emerge. Additionally, the
+   selection of an appropriate FIB is important and will affect interpretations
+   of analyses differently. Unfortunately, since the definition of a bacterial
    strain is fuzzy and dependent on the research group and research task at
    hand, the level of similarity required for two organisms be considered part
    of the same strain is defined and established differently from research
@@ -193,13 +227,42 @@
    acids to distinguish between strains of \textit{E. coli} with greater
    sensitivity~\cite{Anderson:Diversity, Gordon:StrainTyping, Ochman:Enzyme,
    Scott:CurrentMST, Simpson:StateOf}.
+   
+   The contributions of this thesis consist of three primary artifacts:
+   \begin{itemize}
+      \item A tool for analyzing the pyrosequencing process in-silico.
+      \item An interim tool for analyzing pyroprints before the creation of
+            CPLOP~\cite{Jan:Thesis}.
+      \item A clustering algorithm, OHClust!, designed to be incremental and
+            flexible in its analysis.
+   \end{itemize}
+   The work described in this thesis has been used by M.S. and B.S. students in
+   Biology for various types of bacterial research, including longitudinal
+   population-based studies and studies of bacterial transferrance between host
+   species. These studies used \textit{pyroprinting}, a library-dependent MST
+   method developed by the Biology department at Cal Poly, San Luis Obispo,
+   further described in Section \ref{sec:pyroprinting}. The biologists
+   initially needed a way to select a dispensation sequence to maximize the
+   effectiveness of pyroprinting for MST analysis. During this time a tool was
+   developed that would characterize permutations of cycles of nucleotides on
+   given \textit{E. Coli} rRNA sequences, further detailed in Chapter
+   \ref{chap:other_contributions}. Once a dispensation sequence had been
+   determined, the biologists' needs shifted towards a tool that could provide
+   analysis of data in spreadsheets until a database-based application could be
+   developed, a void now filled by CPLOP--a database-based web application for
+   the storage and retrieval of pyroprints~\cite{Jan:Thesis}. This analysis
+   tool is described in \ref{chap:other_contributions}. Finally, chapters
+   \ref{chap:algorithm}, \ref{chap:related}, and \ref{chap:evaluation}, focuses
+   on the development and characterization, related work, and evaluation of the
+   clustering algorithm, OHClust!, respectively. OHClust! is the algorithm
+   for the computational analysis which determines what bacterial isolates are
+   of the same strain.
 
 \chapter{Background}\label{chap:background}
-   %TODO include references for posters and other published material
    To address some of the common complaints regarding other methods of strain
    differentiation, the Biology department at Cal Poly, San Luis Obispo has
    been developing a genotypic, library-dependent MST method,
-   \textit{pyroprinting}. Current genotypic methods can be labor intensive or
+   \textit{pyroprinting}. Current genotypic methods can be labor-intensive or
    financially expensive, and many have issues in reproducibility when
    identifying known \textit{E. coli} strains~\cite{Gordon:StrainTyping,
    Scott:CurrentMST, Simpson:StateOf}. This is especially evident in
@@ -221,45 +284,25 @@
    for genotypic microbial analysis of bacteria (so far \textit{E. coli} only)
    in longitudinal studies~\cite{Montana:ChronoCluster, Montana:CRC}. This
    framework incorporates \textit{pyroprinting} and an \textit{in-silico}
-   source strain differentiation method based on a clustering algorithm further
-   described in Section \ref{sec:ohclust}.
-   
-   The work presented in this paper is the computational analysis which
-   determines what bacterial isolates are of the same strain. More
-   specifically, this paper compares the use of two clustering
-   algorithms--Hierarchical Agglomerative Clustering and OHClust!--in order to
-   characterize and better understand the performance, effects of parameter
-   tuning, and results of OHClust! for pyroprinting. This paper also goes on to
-   describe how OHClust! can be useful when applied to other types of data. The
-   rest of this chapter fully explains the context of this work as well as
-   establishes terminology that will be used throughout the rest of this
-   paper.
+   strain differentiation method based on OHClust!.
+
+   This chapter fully explains the context of this thesis, and the research it
+   supports, and establishes terminology that will be used throughout the rest
+   of this thesis.
 
    \section{Bacterial Sampling and Data Collection}\label{sec:sampling}
-      The process of sampling begins with the selection of stool. From the
-      stool, $N$ samples are collected, isolated, and cultured in preparation
-      for polymerase chain reaction (PCR) and eventually pyroprinting. Each of
-      the bacterial samples are then streaked onto MacConkey agar plates for
-      single isolated colonies (isolate for short) and grown overnight.
-      Isolates are confirmed for the target bacteria at the end of the process.
-      Any isolates that are not of the target bacteria are left unused. This
-      process is highlighted in a previous submission to the CSU research
-      competition~\cite{Montana:CRC} which describes a study where \textit{E.
-      coli} was sampled once a month for six months from three individuals--two
-      females and one male--ranging in age from $20-25$.
-      
-   %TODO this section suckss
-   \section{Strains}\label{sec:strains}
-      The objective of microbial source tracking is to be able to relate the
-      source--host species--of a fecal contamination so that water treatment
-      can be approached by addressing the source of the problem instead of
-      reactively treating the problem. Pyroprinting does this by creating
-      a fingerprint of bacterial isolates, storing this fingerprint and
-      associated metadata in a library, and then comparing fingerprints of
-      isolates in the wild to known isolates in the library. Naturally, the
-      library is a database, and to determine similar, or highly-related,
-      isolates we use clustering. Each cluster that a clustering algorithm
-      produces corresponds to an observable strain of bacteria.
+      The process of sampling begins with the selection of stool, or fecal
+      matter. From the stool, a number of samples are collected, isolated, and
+      cultured in preparation for polymerase chain reaction (PCR) and
+      pyroprinting. Each of the bacterial samples are then streaked onto
+      MacConkey agar plates for single isolated colonies (isolate for short)
+      and grown overnight. Isolates are confirmed for the target bacteria at
+      the end of the process. Any isolates that are not of the target bacteria
+      are left unused. This process is highlighted in a previous submission to
+      the CSU research competition~\cite{Montana:CRC, CSUPERB} which describes
+      a study where \textit{E. coli} was sampled once a month for six months
+      from three individuals--two females and one male--ranging in age from
+      $20-25$.
 
    \section{Pyroprinting}\label{sec:pyroprinting}
       Pyrosequencing is a DNA sequencing process where a new strand of DNA,
@@ -269,7 +312,8 @@
       pyrosequencing process in more detail~\cite{ronaghi:shedsLight}. This
       process takes place on a \textit{plate} containing many
       \textit{wells}--$24$ wells for the \textbf{PyroMark Q24}, a
-      pyrosequencing machine manufactured by Qiagen. A pyrosequencing
+      pyrosequencing machine manufactured by Qiagen that is currently in use by
+      the Biology department at Cal Poly, San Luis Obispo. A pyrosequencing
       \textit{run} denotes the entirety of the pyrosequencing process for a
       single plate. While only one plate can be processed per run, each well on
       the plate contains a separate pyrosequencing reaction. For the PyroMark
@@ -290,7 +334,7 @@
       sequencing strand and the light emittance is measured at 100, then
       \textbf{T} is incorporated into the sequencing strand with light
       emittance 200, then the template strand has twice as many \textbf{T}
-      nucleotides proceeding a series of \textbf{A} nucleotides. Any remaining
+      nucleotides following a series of \textbf{A} nucleotides. Any remaining
       nucleotide not incorporated is enzymatically destroyed and the next
       nucleotide in the dispensation sequence is dispensed.
       
@@ -350,11 +394,6 @@
       genome will vary for different strains of \textit{E. coli}, a pyroprint
       acts as a DNA fingerprint for each strain--a pyrogram fingerprint.
       
-      The algorithm, discussed in Chapter \ref{chap:algorithm}, is flexible
-      enough to address any number of regions and any regions used, and the
-      implementation, discussed in Chapter \ref{chap:implementation} discusses
-      how this is handled in practice.
-
       \begin{figure}[t]
       \centering
       \includegraphics[width=\columnwidth]{graphics/pyroprinting.eps}
@@ -376,6 +415,26 @@
       reaction takes place then subsides as the reaction completes.}
       \label{fig:pyrogram}
       \end{figure}
+
+   \section{Bacterial Strains}\label{sec:strains}
+      Once bacterial isolates are collected and pyroprints of the isolates are
+      constructed, bacterial strains are identified and determined. Bacterial
+      strains are constructed in an isolate-major approach, that is, bacterial
+      strains are constructed based on the analysis of bacterial isolates. While
+      bacterial isolates are compared based on the similarity between their
+      associated pyroprints, biological meaning can only be inferred from the
+      relationships between bacterial isolates. Described further in Chapter
+      \ref{chap:algorithm}, bacterial isolates are grouped into clusters using
+      either agglomerative hierarchical clustering or OHClust!. The
+      interpretation of resulting clusters is straightforward--each cluster
+      corresponds to a potential bacterial strain. More specifically, a cluster
+      is a group of similar data points determined by a similarity metric.
+      Therefore, the similarity metric that compares isolates based on their
+      pyroprints ensures that isolates that have similar genotypes, expressed
+      in their pyroprints, are placed in the same clusters. In this way, each
+      cluster that is formed by a clustering algorithm represents a group of
+      isolates that have similar genotype, thus matching our definition of a
+      bacterial strain.
 
    \section{Data and Terminology}\label{sec:data_and_terms}
       In this section, the details of the data, digital representation of said
@@ -415,6 +474,20 @@
       $p_in$ is a real number representing the light emitted during the
       pyrosequencing process of ITS region $i$ when the nucleotide $d_n$ was
       introduced on dispensation $n$.
+
+      %\begin{itemize}
+      Let $I$ be the set of all isolates. Let $R$ be the set of ITS regions
+      associated with $i$ $\forall i \in I$ $R$. Let $A$ be the set of all upper
+      thresholds, and $B$ be the set of all lower thresholds. $\forall r \in R$,
+      $\forall \alpha \in A$, $\forall \beta \in B$ let $\alpha_r$, $\beta_r$ be the
+      upper and lower threshold pair corresponding to the region $r$ such that
+      $\alpha_r > \beta_r$. Let $P$ be the set of all pyroprints. $\forall i \in I$,
+      $\forall r \in R$ let $P_{ir} \in P$ be the pyroprint corresponding to isolate
+      $i$ at ITS region $r$. Let $M$ be the set of all similaritiy matrices.
+      $\forall r \in R$ let $M_r \in M$ be the matrix containing all pairwise Pearson
+      correlations such that $\forall i,j \in I \times I$ $M_r[i,j] = sim(P_{ir},
+      P_{jr})$
+      %\end{itemize}
       
       \subsection{Metrics}
       Comparison metrics are used to compare data points based on similarity
@@ -430,6 +503,22 @@
       concerned with comparing the variance between a pair of pyroprints
       $\bar{p_x}$, $\bar{p_y}$ instead of a direct comparison between the
       values $p_xn$, $p_yn$.
+
+      \begin{equation}\label{eq:pearson}
+         sim(\bar{X},\bar{Y}) = \frac{\sum_{i=1}^{N}(x_i - E(\bar{X}))(y_i - E(\bar{Y}))}
+         {\sqrt{\sum_{i=1}^{N}(x_i-E(\bar{X}))}\sqrt{\sum_{i=1}^{N}(y_i-E(\bar{Y}))}},
+      \end{equation}
+      \begin{equation}\label{eq:cluster_sim}
+         sim(C_m, C_n) = i,j \in C_m \times C_n, \frac{\sum_{\forall r \in
+         R}M_r[i,j]} {|C_m \times C_n|}
+      \end{equation}
+      \begin{equation}\label{eq:threshold}
+         thr(sim(C_m, C_n)) = \begin{cases}
+                              0 & if sim(C_m, C_n) < \beta_r \\
+                              1 & if sim(C_m, C_n) > \alpha_r \\
+                              sim(C_m, C_n) & otherwise \\
+                              \end{cases}
+      \end{equation}
 
       In order to appropriately interpret the computed correlation coefficient
       between a pair of pyroprints, we utilize a pair of threshold values
@@ -454,30 +543,152 @@
       \ref{chap:implementation} as appropriate.
 
    \section{Clustering}\label{sec:clustering}
-      Cluster analysis, or clustering for short, is the organization of a
-      collection of patterns, or data points, into clusters based on
-      similarity~\cite{Jain:DataClustering}. Using similarity, computed by
-      functions appropriately determined for comparison between patterns, the
-      process of clustering is as simple as grouping patterns with the highest
-      calculated similarity above some threshold parameter(s).
+      There are many datasets where relationships may exist that are not easily
+      observable to the human eye. The analysis of data based on similarity
+      functions determined by various relationships is known as cluster
+      analysis, clustering, or unsupervised learning. phrased another way,
+      clustering is the organization of a collection of patterns, or data
+      points, based on similarity~\cite{Jain:DataClustering}. The groups or
+      partitions that are formed during clustering are referred to as
+      \textit{clusters}. Clustering is used for the analysis of
+      many different types of data and although it can be done many ways, there
+      are two primary families of clustering algorithms--hierarchical and
+      partitional.
 
-      Clustering is innately fuzzy, as it is commonly referred to as
-      \textit{unsupervised learning}. Since the objective of clustering is to
-      organize data according to relationships with minimal manual
-      intervention, the definition of which data points should and shouldn't be
-      grouped and is not well defined. Threshold parameters are the typical
-      approach to addressing this issue in clustering. A threshold is a value
-      or level that a comparison, in our case similarity, must meet--similarity
-      must be above, dissimilarity must be below. In this way, the threshold
-      parameter can be tuned to better suit various data sets with minimal
-      intervention. Intuitively, a threshold can be described as the point at
-      which two data points are believed to be highly related or even
-      identical. This will have different interpretations depending on the data
-      being analyzed and the objective of the analysis being carried out.
-      Intuitively, if two isolates differ substantially, then the two isolates
+      Partitional clustering algorithms iteratively assign and re-assign data
+      points to cluster centroids or seeds. A cluster centroid is a single data
+      point selected to represent the ``center'' of a cluster. Typically,
+      centroids are initially selected from random or maximally distant data
+      points and gradually drift at the end of each iteration. How data points
+      are assigned to cluster centroids on each iteration is how many
+      partitional algorithms differ. K-means clustering approaches this by
+      assigning data points to the cluster of the closest centroid on each
+      iteration. For k-means, clusters are mutually exclusive and when a data
+      point is assigned to a cluster, it is un-assigned to its previous
+      cluster. Generally, due to the use of centroids, partitional clustering
+      algorithms are most effective when there is a general idea of how many
+      partitions exist in the input dataset. For the required analysis of
+      pyroprinting, for which there is no clear idea of how many partitions
+      exist, partitional clustering algorithms are not very useful, and
+      therefore not explored further, except in Chapter \ref{chap:related}.
+      
+      Hierarchical clustering algorithms iteratively group a pair of data
+      points that are maximally similar or separate data points that are
+      maximally dissimilar. Hierarchical clustering algorithms analyze data
+      points in a pairwise manner. Additionally, hierarchical clustering
+      algorithms do not re-assign data points to different clusters. Because
+      data points are only grouped with maximally similar counterparts, the
+      order of clustering for a given dataset is consistent and unchanging. As
+      clusters are formed or separated, hierarchical clustering algorithms
+      construct a dendogram bottom-up or top-down, respectively. A dendogram is
+      a binary tree where an internal node represents a cluster composed of two
+      data points or sub-clusters represented by child nodes. Dendograms always
+      represent individual data points as leaves and clusters as internal
+      nodes. Since hierarchical clustering algorithms do not require any
+      knowledge of how many partitions may exist in the dataset, this is the
+      type of clustering algorithm further explored for analysis of
+      pyroprints.
+
+      \subsection{Agglomerative Hierarchical Clustering}\label{sec:agglomerative}
+         Agglomerative hierarchical clustering is the standard bottom-up
+         hierarchical clustering approach. Agglomerative hierarchical
+         clustering initially considers each data point as a cluster and joins
+         the pair of clusters with the maximal similarity on every iteration.
+         This is known as a bottom-up approach because the dendogram for the
+         input dataset is built from the leaves--each data point--to the
+         root--all data points clustered together. There are two primary
+         components of the agglomerative hierarchical clustering algorithm: the
+         similarity metrics used between data points and clusters, and the
+         threshold for cutting the dendogram. 
+         
+         The two primary similarity functions that must be computed during
+         agglomerative hierarchical clustering are: similarity between data
+         points, and similarity between clusters. The similarity function
+         between data points is determined independent of the clustering
+         algorithm and is based on the data being analyzed. The similarity
+         function between clusters consists of three standard approaches:
+         \begin{itemize}
+            \item Single-Link
+            \item Complete-Link
+            \item Average-Link
+         \end{itemize}
+         The single-link approach computes a similarity function for each pair
+         of data points in the cross-product between two clusters as the
+         similarity between the two most similar data points between them,
+         whereas the complete-link approach computes the opposite--the
+         similarity between the two least similar data points between two
+         clusters. Finally, average-link computes the similarity between two
+         clusters as the average of all pairwise similarities between each data
+         point in each cluster.
+
+         Once clustering is complete and a dendogram is constructed, the
+         resulting set of clusters must still be determined. The dendogram is
+         constructed only to provide an analysis of the relationships between
+         the data points in the input dataset. Since the root of the dendogram
+         always represents all data points of the dataset as a single cluster,
+         there is a ``cut'' that must be made in the dendogram that determines
+         at what point joining clusters is no longer meaningful. This point is
+         called a threshold--a value, or level, that a similarity must exceed.
+         Intuitively, the threshold can be described as the point at which two
+         clusters are believed to contain highly related, or even identical,
+         data points. This will have different interpretations depending on the
+         data being analyzed and the objective of the analysis being carried
+         out, and so is determined based on the input dataset. The dendogram
+         cut is made across edges between internal nodes and child nodes.
+         Dendogram nodes above the cut are ignored, and dendogram nodes
+         directly below the cut are considered the final set of clusters. In
+         this way it is plain that nodes lower in the dendogram have higher
+         similarity between sub-clusters than nodes higher in the dendogram.
+
+\chapter{Biological Tools for Analysis}\label{chap:other_contributions}
+
+\chapter{OHClust!}\label{chap:algorithm}
+      In general, the hierarchical tree is represented as a general n-ary tree as seen in Figure
+      \ref{fig:general_structure}. The parts of the tree are described as follows:
+      (node) Any item in the tree, depicted as circles in Figure
+      \ref{fig:general_structure}, (root) First node in the tree, located at the top,
+      (leaf) A bottom-most node in the tree, (edge) A connection between any two
+      nodes, (parent) In a pair of nodes with a direct connection, the parent node is
+      the top node, or is closer to the root, (child) In a pair of nodes with a
+      direct connection, the child node is the bottom node, or is further from the
+      root, (depth) The number of edges to get from the root to a particular node,
+      (level) Set of all nodes with the same depth.
+      %\begin{description}
+      %   \item[\em{node}] Any item in the tree, depicted as circles in Figure
+      %   \ref{fig:general_structure}.
+      %   \item[\em{root}] First node in the tree, located at the top.
+      %   \item[\em{leaf}] A bottom-most node in the tree.
+      %   \item[\em{edge}] A connection between any two nodes.
+      %   \item[\em{parent}] In a pair of nodes with a direct connection, the parent
+      %   node is the top node, or is closer to the root.
+      %   \item[\em{child}] In a pair of nodes with a direct connection, the child
+      %   node is the bottom node, or is further from the root.
+      %   \item[\em{depth}] The number of edges to get from the root to a particular 
+      %   node.
+      %   \item[\em{level}] Set of all nodes with the same depth.
+      %\end{description}
+
+      If two isolates differ substantially, then the two isolates
       belong to different strains. The thresholds used for clustering are based
       on the thresholds given for each ITS region.
-   
+
+      Once strain similarity/dissimilarity of data points are quantified,
+      hierarchical clustering methods (e.g., CLUSTAL or Primer5~\cite{Primer5:methods})
+      are commonly used to analyze the obtained data and determine
+      how many strains were present among the obtained bacterial isolates.
+      
+      If $sim(\bar{X}, \bar{Y})$ is
+      sufficiently close to $1$, we assume $X$ and $Y$ come from the same strain.
+      However, if $sim(\bar{X}, \bar{Y})$ is sufficiently far from $1$, then $X$ and
+      $Y$ \textit{definitely come from different strains}.
+
+      As an aggregate of several, variable copies of a DNA region, pyroprints
+      are patterns of DNA which capitalize on the differences between the
+      replicates of the ITS regions and serve as the basis of comparison
+      between \textit{E. coli} isolates. A ``match'' between \textit{E. coli}
+      isolates is determined when the pyroprints for both ITS 1 and 2 are
+      considered identical between two isolates.
+
       \textbf{Data Transformation}. Hierarchical clustering algorithms, including the
       algorithm we developed here, work by comparing, on each step, groups of data
       points (pyroprints, in our applications) and combining similar data points to
@@ -515,7 +726,7 @@
       step, we minimize the negative effect that \textit{weakly connected} isolates
       have on cluster construction.
 
-      The structure depicted in Appendix \ref{sec:structural_organization} dictates
+      The structure depicted by Figure \ref{fig:ontology_structure} dictates
       clustering order. Conceptually, this process occurs in the following manner:
       isolates located in the leaves of the structure are clustered using traditional
       hierarchical clustering. The resulting clusters are then propagated up the tree
@@ -527,23 +738,24 @@
       for each month in the study until clustering of all isolates in the structure
       is complete.
 
-\chapter{Algorithms}\label{chap:algorithm}
-      Once strain similarity/dissimilarity of data points are quantified,
-      hierarchical clustering methods (e.g., CLUSTAL or Primer5~\cite{Primer5:methods})
-      are commonly used to analyze the obtained data and determine
-      how many strains were present among the obtained bacterial isolates.
-      
-      If $sim(\bar{X}, \bar{Y})$ is
-      sufficiently close to $1$, we assume $X$ and $Y$ come from the same strain.
-      However, if $sim(\bar{X}, \bar{Y})$ is sufficiently far from $1$, then $X$ and
-      $Y$ \textit{definitely come from different strains}.
+      \begin{figure}[H]
+      \centering
+      \subfloat[General]{
+         \label{fig:general_structure}
+         \includegraphics[width=0.5\textwidth,height=12em]{graphics/IsolateTree.eps}
+      }
+      \subfloat[Experimental]{
+         \label{fig:cluster_structure}
+         \includegraphics[width=0.5\textwidth,height=12em]{graphics/IsolateTree_CurrentStudy.eps}
+      }
+      \caption{Isolate Tree - Structural Organization: The general structure
+               illustrates the parts of the organizational structure, whereas
+               the experimental structure represents the month that the
+               isolates were collected in the first level and the swabbing
+               technique used to collect the isolate in the second level.}
+      \label{fig:ontology_structure}
+      \end{figure}
 
-      As an aggregate of several, variable copies of a DNA region, pyroprints
-      are patterns of DNA which capitalize on the differences between the
-      replicates of the ITS regions and serve as the basis of comparison
-      between \textit{E. coli} isolates. A ``match'' between \textit{E. coli}
-      isolates is determined when the pyroprints for both ITS 1 and 2 are
-      considered identical between two isolates.
 
    \section{OHClust!}\label{sec:ohclust}
       \subsection{Algorithm}
@@ -724,7 +936,7 @@
    Another, very relevant, variant of the SeqClustering algorithm, called
    dynamic seed clustering (DySC), was developed by Zheng, et
    al.~\cite{Zheng:DySC}. DySC is a clustering algorithm developed for reads of
-   the 16S rRNA marker gene commonly used in microbial studies.  DySC
+   the 16S rRNA marker gene commonly used in microbial studies. DySC
    differentiates itself from other SeqClustering algorithms by using both
    fixed seeds and dynamic seeds. Seeds in SeqClustering correspond to a fixed
    seed in DySC, whereas SeqClustering has no equivalent to dynamic seeds in
@@ -1072,6 +1284,9 @@
 
 
    \section{Results}\label{sec:results}
+
+   \section{Conclusion}\label{sec:conclusion}
+
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    %%%%%%%%%%%%%% ------------- End main chapters ---------------------- %%%%%%%%%
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1079,80 +1294,8 @@
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    %%%%%%%%%%%%%% ------------- Begin appendices ----------------------- %%%%%%%%%
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-   \section{Conclusion}\label{sec:conclusion}
-
-\appendix
-
-\chapter{Definitions}\label{app:definitions}
-   \section{Structural Organization}\label{sec:structural_organization}
-      In general, the hierarchical tree is represented as a general n-ary tree as seen in Figure
-      \ref{fig:general_structure}. The parts of the tree are described as follows:
-      (node) Any item in the tree, depicted as circles in Figure
-      \ref{fig:general_structure}, (root) First node in the tree, located at the top,
-      (leaf) A bottom-most node in the tree, (edge) A connection between any two
-      nodes, (parent) In a pair of nodes with a direct connection, the parent node is
-      the top node, or is closer to the root, (child) In a pair of nodes with a
-      direct connection, the child node is the bottom node, or is further from the
-      root, (depth) The number of edges to get from the root to a particular node,
-      (level) Set of all nodes with the same depth.
-      %\begin{description}
-      %   \item[\em{node}] Any item in the tree, depicted as circles in Figure
-      %   \ref{fig:general_structure}.
-      %   \item[\em{root}] First node in the tree, located at the top.
-      %   \item[\em{leaf}] A bottom-most node in the tree.
-      %   \item[\em{edge}] A connection between any two nodes.
-      %   \item[\em{parent}] In a pair of nodes with a direct connection, the parent
-      %   node is the top node, or is closer to the root.
-      %   \item[\em{child}] In a pair of nodes with a direct connection, the child
-      %   node is the bottom node, or is further from the root.
-      %   \item[\em{depth}] The number of edges to get from the root to a particular 
-      %   node.
-      %   \item[\em{level}] Set of all nodes with the same depth.
-      %\end{description}
-
-   \section{Definitions}\label{sec:definitions}
-      %\begin{itemize}
-      Let $I$ be the set of all isolates. Let $R$ be the set of ITS regions
-      associated with $i$ $\forall i \in I$ $R$. Let $A$ be the set of all upper
-      thresholds, and $B$ be the set of all lower thresholds. $\forall r \in R$,
-      $\forall \alpha \in A$, $\forall \beta \in B$ let $\alpha_r$, $\beta_r$ be the
-      upper and lower threshold pair corresponding to the region $r$ such that
-      $\alpha_r > \beta_r$. Let $P$ be the set of all pyroprints. $\forall i \in I$,
-      $\forall r \in R$ let $P_{ir} \in P$ be the pyroprint corresponding to isolate
-      $i$ at ITS region $r$. Let $M$ be the set of all similaritiy matrices.
-      $\forall r \in R$ let $M_r \in M$ be the matrix containing all pairwise Pearson
-      correlations such that $\forall i,j \in I \times I$ $M_r[i,j] = sim(P_{ir},
-      P_{jr})$
-      %\end{itemize}
-
-      \begin{figure}[H]
-      \centering
-      \subfloat[General]{\label{fig:general_structure}\includegraphics[width=0.5\textwidth,height=12em]{graphics/IsolateTree.eps}}
-      \subfloat[Experimental]{\label{fig:cluster_structure}\includegraphics[width=0.5\textwidth,height=12em]{graphics/IsolateTree_CurrentStudy.eps}}
-      \caption{Isolate Tree - Structural Organization: The general structure
-      illustrates the parts of the organizational structure, whereas the experimental
-      structure represents the month that the isolates were
-      collected in the first level and the swabbing technique used to collect the
-      isolate in the second level.}
-      \end{figure}
-
-   \section{Equations}\label{sec:equations}
-      \begin{equation}\label{eq:pearson}
-         sim(\bar{X},\bar{Y}) = \frac{\sum_{i=1}^{N}(x_i - E(\bar{X}))(y_i - E(\bar{Y}))}
-         {\sqrt{\sum_{i=1}^{N}(x_i-E(\bar{X}))}\sqrt{\sum_{i=1}^{N}(y_i-E(\bar{Y}))}},
-      \end{equation}
-      \begin{equation}\label{eq:cluster_sim}
-         sim(C_m, C_n) = i,j \in C_m \times C_n, \frac{\sum_{\forall r \in
-         R}M_r[i,j]} {|C_m \times C_n|}
-      \end{equation}
-      \begin{equation}\label{eq:threshold}
-         thr(sim(C_m, C_n)) = \begin{cases}
-                              0 & if sim(C_m, C_n) < \beta_r \\
-                              1 & if sim(C_m, C_n) > \alpha_r \\
-                              sim(C_m, C_n) & otherwise \\
-                              \end{cases}
-      \end{equation}
+%\appendix
+%\chapter{Definitions}\label{app:definitions}
 
 \clearpage
 \bibliography{bibliography}
