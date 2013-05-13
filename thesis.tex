@@ -75,25 +75,29 @@
 
    \begin{abstract}
       Pyroprinting is a novel, library-based microbial source tracking method
-      developed by the biology department at Cal Poly, San Luis Obispo. This
-      method consists of two parts: (1) sample collection and pyroprinting (2)
-      comparison of produced pyroprints against a database. Cal Poly Library of
-      Pyroprints (CPLOP) is a web-based database application that provides
-      storage and analysis of pyroprints. CPLOP currently contains 10000
-      pyroprints and is growing rapidly as students and researchers continue
-      adding data. The traditional method of analysis used by biologists,
-      \textsf{agglomerative hierarchical clustering}, is inadequate. While the
-      clusters it produces are acceptable, pyroprinting requires a method of
-      analysis that is both scalable and flexible. \textsf{Agglomerative
-      hierarchical clustering} falls short in these regards as it is unable to
-      efficiently incorporate incremental updates and is incapable of utilizing
-      available meta-data. We propose \textsf{ontology-based hierarchical
-      clustering} (\textsf{OHClust!}), a modification of \textsf{agglomerative
-      hierarchical clustering} that expresses meta-data-based relationships as
-      an ontology to direct the order in which hierarchical clustering
-      algorithms analyze the data. In this thesis, the strengths and weaknesses
-      of \textsf{OHClust!} are discussed, and its performance is analyzed in
-      comparison to \textsf{agglomerative hierarchical clustering}.
+      developed by the Biology department at Cal Poly, San Luis Obispo. This
+      method consists of two parts: (1) a collection of bacterial fingerprints,
+      called pyroprints, from known host species, and (2) a method for
+      pyroprint comparison. Currently, Cal Poly Library of Pyroprints (CPLOP),
+      a web-based database application, provides storage and analysis of over
+      $10000$ pyroprints. This number is quickly growing as students and
+      researchers continue to use pyroprinting for research. Biologists
+      conducting research using pyroprinting rely on methods for partitioning
+      collected bacterial isolates into bacterial strains. Clustering
+      algorithms are commonly used for bacterial strain analysis of organisms
+      in computational biology. Unfortunately, \textsf{agglomerative
+      hierarchical clustering}, a commonly used clustering algorithm, is
+      inadequate given the nature of data collection for pyroprinting. While
+      the clusters produced by \textsf{agglomerative hierarchical
+      clustering} are acceptable, pyroprinting requires a method of analysis
+      that is scalable and incorporates useful meta-data into the clustering
+      process. We propose ontology-based hierarchical clustering
+      (\textsf{OHClust!}), a modification of \textsf{agglomerative hierarchical
+      clustering} that expresses meta-data-based relationships as an ontology
+      to direct the order in which hierarchical clustering algorithms analyze
+      the data. In this thesis, the strengths and weaknesses of
+      \textsf{OHClust!} are discussed, and its performance is analyzed
+      in comparison to \textsf{agglomerative hierarchical clustering}.
    \end{abstract}
 
    \begin{acknowledgements}
@@ -1766,6 +1770,56 @@
                the root.
       \end{enumerate}
 
+      \begin{figure}[!Ht]
+         \centering
+         \fbox{\begin{minipage}{\textwidth}
+            \begin{algorithmic}
+               \Function {ontologicalCluster}{$D$, $N$}
+                  \State $C \gets \emptyset$
+
+                  \If {$N = null$}
+                     \Comment{If node is null; return emptyset}
+                     \Return $C$
+                  \EndIf
+
+                  \If {isSimilarCorr($N$)}
+                     \Comment{If node has SimilarCorr option}
+                     \State $T \gets \alpha$
+                  \Else
+                     \If{isSquishyCorr($N$)}
+                        \Comment{If node has SquishyCorr option}
+                        \State $T \gets \beta$
+                     \EndIf
+                  \EndIf
+
+                  \If {$|$children($N$)$| > 0$}
+                     \Comment{If node has children; cluster each child}
+                     \For {$n_i \in$ children($N$)}
+                        \State $C \gets C\;\cup$ ontologicalCluster($D$, $n_i$)
+
+                         \If {isTimeSensitive($N$)}
+                           \State $C \gets C\;\cup$ agglomerativeCluster($D$, $C$, $T$)
+                        \EndIf
+                     \EndFor
+
+                     \If {!isTimeSensitive($N$)}
+                        \State $C \gets C\;\cup$ agglomerativeCluster($D$, $C$, $T$)
+                     \EndIf
+
+                  \Else
+                     \Comment{If leaf node; cluster data}
+                     \State $C \gets$ agglomerativeCluster($D$, $C$, $T$)
+                  \EndIf
+
+                  \Return $C$
+               \EndFunction
+            \end{algorithmic}
+         \end{minipage}}
+         \caption{A function for clustering data maintained at various nodes
+                  in the ontology.}
+         \label{fig:ontological_cluster}
+      \end{figure}
+
       The contents, or features, layout, and ordering of the ontological
       structure is user-specified. Ideally, ontology specification is done via
       a graphical tool. However, ontology specification is currently supported
@@ -1804,84 +1858,36 @@
       the data contained in an ontological node they are percolated up the
       tree.
 
-      Iteration over the ontological structure to execute clustering is seen in
-      the pseudocode provided below:
-      \begin{algorithmic}
-         \Function {ontologicalCluster}{$D$, $N$}
-            \State $C \gets \emptyset$
-
-            \If {$N = null$}
-               \Comment{If node is null; return emptyset}
-               \Return $C$
-            \EndIf
-
-            \If {isSimilarCorr($N$)}
-               \Comment{If node has SimilarCorr option}
-               \State $T \gets \alpha$
-            \Else
-               \If{isSquishyCorr($N$)}
-                  \Comment{If node has SquishyCorr option}
-                  \State $T \gets \beta$
-               \EndIf
-            \EndIf
-
-            \If {$|$children($N$)$| > 0$}
-               \Comment{If node has children; cluster each child}
-               \For {$n_i \in$ children($N$)}
-                  \State $C \gets C\;\cup$ ontologicalCluster($D$, $n_i$)
-
-                   \If {isTimeSensitive($N$)}
-                     \State $C \gets C\;\cup$ agglomerativeCluster($D$, $C$, $T$)
-                  \EndIf
-               \EndFor
-
-               \If {!isTimeSensitive($N$)}
-                  \State $C \gets C\;\cup$ agglomerativeCluster($D$, $C$, $T$)
-               \EndIf
-
-            \Else
-               \Comment{If leaf node; cluster data}
-               \State $C \gets$ agglomerativeCluster($D$, $C$, $T$)
-            \EndIf
-
-            \Return $C$
-         \EndFunction
-
-         \Function {agglomerativeCluster}{$D$, $C$, $T$}
-            \State $C' \gets C$
-            \State ($c_{a}$, $c_{b}$) $\gets \emptyset$
-            \State $D[\;] \gets$ computeSimilarities($D$, $C'$)
-
-            \While {$|C'| > 1$}
-               \State ($c_a$, $c_b$) $\gets$ \textit{arg}max($D[\;]$)
-
-               \If {sim($c_a$, $c_b$) $\ge T$}
-                  \State $C' \gets C'\;- c_{a}$
-                  \State $C' \gets C'\;- c_{b}$
-
-                  \State $C' \gets C'\;\cup$ combineClusters($c_a$, $c_b$)
-
+      \begin{figure}[!Ht]
+         \centering
+         \fbox{\begin{minipage}{\textwidth}
+            \begin{algorithmic}
+               \Function {agglomerativeCluster}{$D$, $C$, $T$}
+                  \State $C' \gets C$
+                  \State ($c_{a}$, $c_{b}$) $\gets \emptyset$
                   \State $D[\;] \gets$ computeSimilarities($D$, $C'$)
-               \EndIf
-            \EndWhile
 
-            \Return $C'$
-         \EndFunction
+                  \While {$|C'| > 1$}
+                     \State ($c_a$, $c_b$) $\gets$ \textit{arg}max($D[\;]$)
 
-         \Function {computeSimilarities}{$D$, $C$}
-            \For {$c_j$, $c_k \in C$}
-               \State $D[j, k] \gets$ sim($c_j$, $c_k$)
+                     \If {sim($c_a$, $c_b$) $\ge T$}
+                        \State $C' \gets C'\;- c_{a}$
+                        \State $C' \gets C'\;- c_{b}$
 
-               \If {$D[j, k] \ge \alpha$}
-                  \State $D[j, k] \gets 1$
-               \ElsIf {$D[j, k] < \beta$}
-                  \State $D[j, k] \gets 0$
-               \EndIf
-            \EndFor
+                        \State $C' \gets C'\;\cup$ combineClusters($c_a$, $c_b$)
 
-            \Return $D$
-         \EndFunction
-      \end{algorithmic}
+                        \State $D[\;] \gets$ computeSimilarities($D$, $C'$)
+                     \EndIf
+                  \EndWhile
+
+                  \Return $C'$
+               \EndFunction
+            \end{algorithmic}
+         \end{minipage}}
+         \caption{Function that applied agglomerative hierarchical clustering.}
+         \label{fig:agglomerative_cluster}
+      \end{figure}
+
       For this pseudocode, the \textsf{computeSimilarities} and
       \textsf{agglomerativeCluster} functions are straightforward and do all of
       the major work. All similarities between clusters are calculated by
@@ -1908,6 +1914,29 @@
       this way, data is initially stored in leaf nodes. Once clustering is
       invoked, data is clustered at the bottom level, and results are
       percolated up through the cluster.
+
+      \begin{figure}[!Ht]
+         \centering
+         \fbox{\begin{minipage}{\textwidth}
+            \begin{algorithmic}
+               \Function {computeSimilarities}{$D$, $C$}
+                  \For {$c_j$, $c_k \in C$}
+                     \State $D[j, k] \gets$ sim($c_j$, $c_k$)
+
+                     \If {$D[j, k] \ge \alpha$}
+                        \State $D[j, k] \gets 1$
+                     \ElsIf {$D[j, k] < \beta$}
+                        \State $D[j, k] \gets 0$
+                     \EndIf
+                  \EndFor
+
+                  \Return $D$
+               \EndFunction
+            \end{algorithmic}
+         \end{minipage}}
+         \caption{Function for computing similarities between two clusters.}
+         \label{fig:compute_similarities}
+      \end{figure}
 
    \section{Algorithmic Analysis}\label{sec:algorithm_analysis}
       In this section, the algorithimic complexity of \textsf{OHClust!} is
@@ -1972,7 +2001,7 @@
       \textsf{agglomerative clustering} at a node, except for $\frac{n}{p^{k}}$
       isolates instead of $n$. Predictably, we observe a complexity of
       $O(\frac{n}{p^{k}}\;(\frac{(\frac{n}{p^{k}} - 1)}{2} \times
-      (\frac{n}{p^{k}} - 1))$. Again, considering that $k$ is on average a
+      (\frac{n}{p^{k}} - 1)))$. Again, considering that $k$ is on average a
       small number and that $p$ is typically small in comparison to $n$, this
       complexity is asymptotically upper bounded by $O(n^{3})$.
 
@@ -1983,7 +2012,7 @@
       $$
          T(n) = \begin{cases}
                   \Theta(1) & if n < c,\\
-                  pT(n/p) + O(n^{3}) & otherwise.\\
+                  pT(\frac{n}{p}) + O(n^{3}) & otherwise.\\
                 \end{cases}
       $$
       For a leaf that has $n <$ some small constant $c$ isolates, the
@@ -2014,6 +2043,18 @@
                   \textsf{OHClust!}}
          \label{fig:recursion_tree}
       \end{figure}
+
+      To solve the recurrence relation we fix $p$ to $p=3$ as an upperbound for
+      our ontology, which has $p=2$ when $k=2$. Additionally, we use a sum to
+      represent an upper bound of the $T(\frac{n}{p})$ term and solve our
+      recurrence relation as follows:
+      $$
+        T(n) = \sum_{i=0}^{k}(\frac{1}{3})^{2i} cn^{3} + \Theta(n^{3})
+             < \sum_{i=0}^{\infty}(\frac{1}{3})^{2i} cn^{3} + \Theta(n^{3})
+      $$
+      $$\;\;\;= \frac{1}{1-\frac{1}{3}} cn^{3} + \Theta(n^{3})$$
+      $$\;\;\;= \frac{3}{2} cn^{3} + \Theta(n^{3})$$
+      $$\;\;\;= O(n^{3})$$
 
 \chapter{Related Work}\label{chap:related}
    \section{Incremental Clustering}\label{sec:incr_cluster}
@@ -2388,99 +2429,250 @@
 
 \chapter{Evaluation}\label{chap:evaluation}
    There are two aspects of \textsf{OHClust!} we are interested in evaluating:
-   the similarity between \textsf{OHClust!} clusterings and baseline
-   clusterings and the performance for datasets that will be contiuously,
-   incrementally updated. Although there is no best known clustering for
-   bacterial isolates, the biologists use \textsf{agglomerative clustering} and
-   consider the resulting clustering as an acceptable baseline clustering. To
-   determine if \textsf{OHClust!} approximates an acceptable clustering, the
-   clusterings produced by \textsf{OHClust!} and \textsf{agglomerative
-   clustering} are compared and evaluated. \textsf{Agglomerative clustering} is
-   used instead of \textsf{k-means cluster} because the number of clusters, k,
-   is unknown.
+   (1) the quality of resulting clusters, and (2) the performance for datasets which
+   receive continuous, incremental updates. For evaluating the quality of
+   clusters, \textsf{agglomerative clustering} is used as a baseline. Although
+   there is no best known clustering, the biologists consider the results of
+   \textsf{agglomerative clustering} to be acceptable. By investigating the
+   agreement between clusters produced by \textsf{OHClust!} and
+   \textsf{agglomerative clustering}, we show that the accuracy and sensitivity
+   of \textsf{OHClust!} is acceptable. By evaluating the performance of
+   \textsf{OHClust!} for datasets, we show that the performance benefits
+   outweight the minor drawbacks to cluster quality.
 
-   %TODO
-   Performance of \textsf{OHClust!} is expected to be similar to that of
-   \textsf{agglomerative clustering} when computing a clustering in a single
-   run for an input dataset. For smaller datasets, the overhead associated with
-   building and filling the ontological structure used by \textsf{OHClust!} is
-   likely to worsen performance when compared to \textsf{agglomerative
-   clustering}. However, for large datasets, the reduced number of comparisons
-   when clustering data on lower levels of the ontological structure should
-   make \textsf{OHClust!} perform better.
+   Preliminary results on the comparison between \textsf{OHClust!} and
+   \textsf{agglomerative clustering} was done in a previous case
+   study~\cite{Montana:ChronoCluster}, but, in this section, the comparison is
+   investigated more thoroughly using larger, more complex datasets. It is
+   expected that \textsf{OHClust!} will perform similarly to
+   \textsf{agglomerative clustering} for a single or initial run. For smaller
+   datasets, the overhead associated with building and filling the ontological
+   structure used by \textsf{OHClust!} is likely to worsen performance when
+   compared to \textsf{agglomerative clustering}. However, for large datasets,
+   the partitioning of data points into $p^{k}$ paths of the ontological
+   structure should make \textsf{OHClust!} perform better. For cluster results,
+   it is epxected that \textsf{OHClust!} will produce clusters that are a
+   \textit{refinement} of clusters from \textsf{agglomerative clustering}. A
+   refinement is where each cluster $C_{a}$ in a set of clusters $\mathcal{C}$ is
+   a subset of a cluster $C'_{b}$ from a set of clusters $C'$. In this case,
+   $\mathcal{C}$ is a set of clusters produced by \textsf{OHClust!} and $C'$ is
+   a set of clusters produced by \textsf{agglomerative clustering}. Silke and
+   Dorothea Wagner formalize this concept as follows~\cite{Wagner:Overview}:
+   $$
+     \forall C_{a} \in \mathcal{C},\;\exists C'_{b} \in \mathcal{C}'\;:
+                       C_{a} \subseteq C'_{b}.
+   $$
 
-   For evaluation of \textsf{OHClust!}, resulting clusters are compared against the
-   clusters of \textit{Agglomerative Hierarchical
-   Clustering}--\textit{HClustering} for short. Given the wide use of
-   HClustering by biologists on biological datasets, HClustering is used as
-   the baseline to compare \textsf{OHClust!} against. Preliminary results on the
-   comparison of accuracy was done in a previous case
-   study~\cite{Montana:ChronoCluster}, but, in this section, the
-   clusters produced by the two algorithms are compared more thoroughly, on larger, more
-   complex datasets, and both algorithms are analyzed for their performance. In many
-   cases, \textsf{OHClust!} is expected to produce clusters $C$ that are a
-   \textit{refinement} of clusters from HClustering, $C'$. That is, each
-   cluster $C_i \in C$ is contained in a cluster of $C'_k \in C'$,
-   formally\footnote{This definition of refined clusters comes from
-   Wagner~\cite{Wagner:Overview}}:
-   $$\forall C_i \in C, \exists C'_k \in C' : C_i \subseteq C'_k$$.
-   Below, both the hypothesis and evaluation plan are described before discussing
-   results in Section \ref{sec:results} and relevant conclusions in Section
-   \ref{sec:conclusion}.
+   \section{Notation}\label{sec:notation}
+      Throughout this chapter, we utilize the same notation described by Silke
+      and Dorothea Wagner~\cite{Wagner:Overview}. This notation is necessary
+      for understanding three of the four metrics we use for evaluation. Let
+      $\mathcal{C}$ be the set of clusters produced by \textsf{OHClust!}, and
+      let $\mathcal{C}'$ be the set of clusters produced by
+      \textsf{agglomerative clustering}. When comparing the two sets of
+      clusters, we must consider four disjoint sets of data point pairs:
+      $$
+        S_{00} = \lbrace I_{j}, I_{k} \not\in C_{a} \in \mathcal{C}
+                           \land   I_{j}, I_{k} \not\in C'_{b} \in \mathcal{C}' \rbrace
+      $$
+      $$
+        S_{10} = \lbrace I_{j}, I_{k} \in C_{a} \in \mathcal{C}
+                           \land   I_{j}, I_{k} \not\in C'_{b} \in \mathcal{C}' \rbrace
+      $$
+      $$
+        S_{01} = \lbrace I_{j}, I_{k} \not\in C_{a} \in \mathcal{C}
+                           \land   I_{j}, I_{k} \in C'_{b} \in \mathcal{C}' \rbrace
+      $$
+      $$
+        S_{11} = \lbrace I_{j}, I_{k} \in C_{a} \in \mathcal{C}
+                           \land   I_{j}, I_{k} \in C'_{b} \in \mathcal{C}' \rbrace
+      $$
+      For convenience, let $n_{ab}$ be the cardinality of the set
+      $S_{ab}$ where $a,b \in \{0, 1\}$. The cardinality of the union of all
+      sets $S_{00}, S_{10}, S_{01}, S_{00}$ is:
+      $$n_{00} + n_{10} + n_{01} + n_{11} = {\binom{n}{2}}$$
+      because we are considering each pairing of isolate data points $I_{j}$
+      and $I_{k}$. This notation is accurate only for two clusterings
+      $\mathcal{C}$ and $\mathcal{C}'$ of the same data set $\mathcal{I} =
+      \lbrace I_{0}, \ldots, I_{n} \rbrace$.
+
+   \section{Evaluation Metrics}\label{sec:eval_metrics}
+      For our evaluation of clusters produced by \textsf{OHClust!} and
+      \textsf{agglomerative clustering}, we use four comparison metrics:
+      \begin{itemize}
+         \item Jaccard Index
+         \item Dice's coefficient
+         \item Rand Index
+         \item Variation of Information
+      \end{itemize}
+      The Jaccard Index, Rand Index, and variation of information are explained
+      very well by Silke and Dorothea Wagner~\cite{Wagner:Overview}. The
+      Jaccard Index was described as being commonly used for ecology (e.g. for
+      measuring species diversity between two different communities), which
+      seems like a natural choice for evaluation. Dice's coefficient is
+      slightly different from Jaccard, using the cardinality of the two sets
+      being compared as the denominator instead of the cardinality of the union
+      of the two sets being compared. The Rand Index is a standard metric for
+      comparing sets of clusters and has been mentioned multiple times in
+      literature~\cite{Wagner:Overview, Youness:Partitions}. Finally, the
+      variation of information metric was described by Silke and
+      Dorothea Wagner as having extensive analysis, further detailed by
+      Meil\v{a}~\cite{Meila:Axiomatic}.
+
+      The Jaccard Index measures the similarity between two sets as the
+      cardinality of their intersection over the cardinality of their union:
+      $$J(A, B) = \frac{|A\cap B|}{|A\cup B|}.$$
+      This produces a value from $0$ to $1$ such that a value of $1$ represents
+      a $100\%$ overlap of the two clusters, and $0$ represents disjoint
+      sets. We adjust the Jaccard Index for comparing two sets of clusters
+      $\mathcal{C}$ and $\mathcal{C}'$ as follows:
+      $$
+         \mathcal{J}(\mathcal{C}, \mathcal{C}') =
+         \frac{n_{11}}{n_{10} + n_{01} + n_{11}},
+      $$
+      where $n_{11}$ represent the intersection, or agreement, between
+      $\mathcal{C}$ and $\mathcal{C}'$, and $n_{10} + n_{01} + n_{11}$
+      represents the union, or isolate pairs that are in the same cluster in
+      either $\mathcal{C}$, $\mathcal{C}'$, or both. The only isolate pairs not
+      considered in the Jaccard Index function are pairs that are in different
+      clusters in both $\mathcal{C}$ and $\mathcal{C}'$. However, these pairs
+      are accounted for in Dice's coefficient.
+
+      Dice's coefficient measures the similarity between two sets as the
+      cardinality of their intersection over the cardinality of all possible
+      elements:
+      $$D(A, B) = \frac{|A\cap B|}{|A| + |B|}.$$
+      When comparing two sets, Dice's coefficient has a higher penalty for
+      elements that are not present in both $A$ and $B$. Dice's coefficient is
+      formulated as follows when adjusted for comparing clusters:
+      $$
+         \mathcal{D}(\mathcal{C}, \mathcal{C}') =
+         \frac{2\,|n_{11}|}{n_{00} + n_{10} + n_{01} + n_{11}}
+      $$
+      Unlike the Jaccard Index, Dice's coefficient gives extra penalty for
+      isolate pairs that are in different clusters in both $\mathcal{C}$ and
+      $\mathcal{C}'$. This means that while the Jaccard Index does not penalize
+      the similarity between two clusters $\mathcal{C}$ and $\mathcal{C}'$ for
+      single isolate clusters, Dice's coefficient does. It is preferable,
+      however, not to penalize the similarity of two sets of clusters for
+      single isolate clusters, so we consider Jaccard Index with more weight
+      than we do Dice's coefficient. It is useful however to have insight into
+      the amount of cluster agreement in comparison to the number of single
+      isolate clusters. Alternately, the Rand Index considers isolate pairs in
+      the set $S_{00}$ as part of the similarity between two sets of clusters.
+
+      The formulation of the Rand Index we use is:
+      $$
+         \mathcal{R}(\mathcal{C}, \mathcal{C}') =
+         \frac{2\,(n_{11} + n_{00})}{n\,(n-1)}
+      $$
+      Notice that the denominator $n\,(n - 1)$ is the number of isolate pairs
+      $I_{j}, I_{k}$ where $I_{j} \not= I_{k}$. The numerator $2\,(n_{11} +
+      n_{00})$ represents the isolate pairs with the same cluster assignment,
+      or classification, in both sets of clusters $\mathcal{C}$ and
+      $\mathcal{C}'$. The Rand Index produces a similarity between two sets of
+      clusters from $0$ to $1$, where $0$ means that each set of clusters
+      disagree on every cluster assignment. A Rand Index of $1$ means that each
+      set of clusters completely agree on cluster assignment. The Rand Index is
+      a simple comparison metric that counts the number of agreements between
+      each set of clusters and then divides by the total number of isolate
+      pairs considered.
+
+      %~\cite{Halkidi:Validation}.
+      Finally, the comparison metric for variation of information between two
+      clusterings is a similarity measure based on entropy. The motivation for
+      this comparison metric is to determine the change in information when
+      going from one set of clusters $\mathcal{C}$ to another set of clusters
+      $\mathcal{C}'$. To calculate the variation of information, we need to
+      first understand entropy of an entity. Consider the entropy $H$ of a DNA
+      sequence $d$:
+      $$H(d) = -\sum_{a\in\Sigma}p_{i}\,\log_{2}\,(p_{i})$$
+      To calculate the entropy of a DNA sequence, we consider each nucleotide
+      $a$ in our alphabet $\Sigma = \{A, T, C, G\}$. Intuitively, we are
+      interested in the probability that a unique value occurs in our input,
+      where our input is the DNA sequence $d$, a unique value is a nucleotide
+      $a$, and an occurrence of $a$ is simply the number of times $a$ is
+      observed in $d$. The probability that a nucleotide $a$ occurs in our
+      input, then, is simply $p_{i} = \frac{|a|}{|d|}$. For a DNA sequence $d$
+      that has an even distribution of \textbf{A}s, \textbf{T}s, \textbf{C}s,
+      and \textbf{G}s, $H(d) = 2$. In contrast, a DNA sequence $d$ that has
+      only \textbf{A}s has an entropy of $H(d) = 0$. The range of entropy $H$
+      is from $0$, for homogeneous inputs, to $-\log_{2}\,(\frac{1}{|\Sigma|})$
+      for perfectly heterogeneous inputs. The formulation of $H$ for comparing
+      clusters is as follows:
+      \begin{align*}
+         P(I_{j})       &= \frac{C_{a}}{n} \\
+         \mathcal{H}(\mathcal{C})
+                &= -\sum_{a=1}^{j}P(i)\,log_2\,P(i) \\
+         P(I_{j},I_{k}) &= \frac{| C_{a} \cap C'_{b}|}{n} \\
+         \mathcal{I}(\mathcal{C}, \mathcal{C}')
+                &= \sum_{b=1}^{k}\sum_{a=1}^{j}
+                   P(I_{a},I_{b})\,log_2\,\frac{P(a,b)}{P(a)\,P(b)} \\
+      \end{align*}
+      Where $P(I_{j})$ is the probability that a randomly chosen isolate
+      $I_{j}$, is in cluster $C_{a} \in \mathcal{C}$. Using $P(I_{j})$, it is
+      now possible to calculate the entropy for a set of clusters $\mathcal{C}$
+      using $\mathcal{H}(\mathcal{C})$. We then extend this to account for the
+      entropy of two sets of clusters based on isolate pairs, much as we did
+      for previous evaluation metrics. We use $P(I_{j}, I_{k})$ to calculate
+      the probability that an isolate pair $I_{j}, I_{k}$ is in a cluster $C_{a}
+      \in \mathcal{C}$ and in a cluster $C_{b} \in \mathcal{C}'$. We then use
+      $\mathcal{I}(\mathcal{C}, \mathcal{C}')$ to calculate the \textit{mutual
+      information} between two clusterings $\mathcal{C}$ and $\mathcal{C}'$.
+      Mutual information extends the idea of homogeneity and heterogeneity for
+      a single input, and considers the homogeneity and heterogeneity of
+      agreement for cluster assignment between two inputs. In this case, our
+      two inputs are a set of clusters $\mathcal{C}$ produced by
+      \textsf{OHClust!} and a set of clusters $\mathcal{C}'$ produced by
+      \textsf{agglomerative clustering}. By summing the entropy of each set
+      of clusters, and subtracting the mutual information from each, we are
+      then able to compute the mutual information between two sets of clusters:
+      \begin{align*}
+         \mathcal{V}\mathcal{I}(\mathcal{C}, \mathcal{C}') &=
+         \mathcal{H}(\mathcal{C}) + \mathcal{H}(\mathcal{C}') -
+         2\,\mathcal{I}(\mathcal{C}, \mathcal{C}')
+         \\
+         &= [\mathcal{H}(\mathcal{C}) -
+             \mathcal{I}\,(\mathcal{C}, \mathcal{C}')] +
+            [\mathcal{H}(\mathcal{C}') -
+             \mathcal{I}\,(\mathcal{C}, \mathcal{C}')]
+      \end{align*}
 
    \section{Hypothesis}\label{sec:eval_goals}
-      For the comparison between \textsf{OHClust!} and HClustering, the resulting
-      clusters of both algorithms are expected to be largely similar. This is
-      formalized by the null hypothesis $H_0: VI(C, C')$ is very close to $2/n$
-      (Not yet actually determined). $VI(C, C')$ is the variation of
-      information~\cite{Halkidi:Validation} between the set of \textsf{OHClust!}
-      clusters $C$ and the set of HClustering clusters $C'$ defined as:
-      $$VI(C, C') = H(C) + H(C') - 2I(C, C')$$
-      where:
-      $$P(i) = \frac{C_i}{n}$$
-      $$P(i,j) = \frac{| C_i \cap C_j'}{n}$$
-      $$H(C) = -\sum_{i=1}^{k}P(i)log_2P(i)$$
-      and
-      $$I(C, C') = \sum_{i=1}^{k}\sum_{j=1}^{t}P(i,j)log_2\frac{P(i,j)}{P(i)P(j)}$$
-      In the above equations, $n$ is the number of clusters, $P(i)$ is the
-      probability that an element $x$, at random, is in the cluster $C_i \in C$
-      and $P(i, j)$ is the probability that an element $x$ is in the clusters
-      $C_i \in C$ and $C'_j \in C'$, where $|C_i \cap C'_j|$ is the size of the
-      intersection between clusters $C_i$ and $C'_j$. shannon's entropy,
-      $H(C)$, can then be calculated for $C$ and $C'$. Relating the entropy of
-      both sets of clusters, $H(C)$ and $H(C')$, we then calculate the mutual
-      information between $C$ and $C'$, $I(C, C')$.
+      We formalize the null hypothesis that \textsf{OHClust!} and
+      \textsf{agglomerative clustering} produce similar cluster results for the
+      same dataset as follows:
+      $$H_0: \mathcal{V}\mathcal{I}(\mathcal{C}, \mathcal{C}') \approx \frac{2}{n}.$$
+      Formally, the $\mathcal{V}\mathcal{I}$ distance between two clusterings
+      $\mathcal{C}$ and $\mathcal{C}'$ with $\mathcal{C} \not= \mathcal{C}'$
+      has a lower bound of $\frac{2}{n}$. This means that our null hypothesis
+      $H_0$ is that $\mathcal{V}\mathcal{I}(\mathcal{C}, \mathcal{C}')$ will be
+      approximately $\frac{2}{n}$, or that the clusters produced by
+      \textsf{OHClust!} and \textsf{agglomerative clustering} will be
+      highly similar.
 
-      Additionally, it is expected that while the performance of \textsf{OHClust!} and
-      HClustering should be relatively similar for a given raw dataset,
-      \textsf{OHClust!} will perform much faster than HClustering when given additional
-      data, that still fits the ontology specified, to be clustered. This
-      expectation is based on the ability of \textsf{OHClust!} to analyze and
-      incorporate clusters in newly collected data with clusters previously
-      formed, whereas HClustering may incorrectly join new data to previously
-      constructed clusters, and thus must completely re-analyze the entire
-      dataset when new data is introduced.
+      $<$TODO$>$
 
    \section{Evaluation Plan}\label{sec:eval_plan}
       The evaluation plan detailed in this section focuses on the question
-      ``how does the performance of \textsf{OHClust!} compare to HClustering?'' while at
+      ``how does the performance of \textsf{OHClust!} compare to \textsf{agglomerative clustering}?'' while at
       the same time ensuring that \textit{The clusters formed by OHClust! and
-      HClustering do not diverge significantly.} The divergence between
-      HClustering and \textsf{OHClust!} is important to consider since there is no clear idea
+      agglomerative clustering do not diverge significantly.} The divergence between
+      \textsf{agglomerative clustering} and \textsf{OHClust!} is important to consider since there is no clear idea
       of what resulting clusters \textbf{should} look like, so by showing that
       the clusters formed by each algorithm are similar enough to each other,
-      it can be seen that \textsf{OHClust!} is no less accurate than HClustering, and
+      it can be seen that \textsf{OHClust!} is no less accurate than \textsf{agglomerative clustering}, and
       thus, accuracy is not an issue.
 
       My evaluation plan is motivated by the following evaluation goals:
       \begin{itemize}
          \item Show that the clusters formed by \textsf{OHClust!} are insignificantly
-               dissimilar from HClustering.
+               dissimilar from \textsf{agglomerative clustering}.
          \item Determine how many data points may be added before the
-               dissimilarity between \textsf{OHClust!} and HClustering clusters
+               dissimilarity between \textsf{OHClust!} and \textsf{agglomerative clustering} clusters
                significantly diverge.
          \item Assess the performance benefits of using \textsf{OHClust!} in a
-               microbial source tracking system in place of HClustering. More
+               microbial source tracking system in place of \textsf{agglomerative clustering}. More
                specifically:
                \begin{itemize}
                   \item On average, how much time is saved using \textsf{OHClust!}?
@@ -2523,9 +2715,9 @@
       (This is written as if the tests are already done) While there are many
       parameters that can be tuned to characterize the behaviors of \textsf{OHClust!},
       It is unnecessary to compare the results from all configurations of
-      \textsf{OHClust!} with all configurations of HClustering. The tests that have been
+      \textsf{OHClust!} with all configurations of \textsf{agglomerative clustering}. The tests that have been
       ran include several configurations of \textsf{OHClust!} compared against each other, and the
-      comparison of one configuration of HClustering to the same configuration
+      comparison of one configuration of \textsf{agglomerative clustering} to the same configuration
       of \textsf{OHClust!}. The different configurations of \textsf{OHClust!} that were tested
       can be seen in Figure \ref{tab:ohclust_configs}.
 
